@@ -4,9 +4,9 @@ pkgrel=1
 pkgdesc="base configuration"
 arch=('i686' 'x86_64')
 groups=("base")
-source=("generate-getty.sh" "base-config.install")
-md5sums=("SKIP" "SKIP")
-backup=("etc/passwd" "etc/hostname")
+source=("generate-getty.sh" "base-config.install" "group")
+md5sums=("SKIP" "SKIP" "SKIP")
+backup=("etc/passwd" "etc/hostname" "etc/group")
 depends=("busybox" "runit")
 install="base-config.install"
 
@@ -27,6 +27,7 @@ package() {
 
   echo "yuyushiki" >etc/hostname
   echo "root::0:0:root:/root:/bin/sh" >etc/passwd
+  cp "$srcdir"/group etc/group
 
   chmod -R 555 proc
   chmod -R 555 sys

@@ -1,0 +1,21 @@
+--- include/global-old.h	2014-06-08 12:08:20.069172345 +0000
++++ include/global.h	2014-06-08 12:08:33.102435071 +0000
+@@ -133,18 +133,6 @@ int snd_shm_area_destroy(struct snd_shm_
+ 
+ int snd_user_file(const char *file, char **result);
+ 
+-#if !defined(_POSIX_C_SOURCE) && !defined(_POSIX_SOURCE)
+-struct timeval {
+-	time_t		tv_sec;		/* seconds */
+-	long		tv_usec;	/* microseconds */
+-};
+-
+-struct timespec {
+-	time_t		tv_sec;		/* seconds */
+-	long		tv_nsec;	/* nanoseconds */
+-};
+-#endif
+-
+ /** Timestamp */
+ typedef struct timeval snd_timestamp_t;
+ /** Hi-res timestamp */

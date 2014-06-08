@@ -1,0 +1,20 @@
+pkgname=xmp
+pkgver=4.0.7
+pkgrel=1
+pkgdesc="eXtended Module Player"
+arch=('i686' 'x86_64')
+url="http://xmp.sourceforge.net"
+source=("http://downloads.sourceforge.net/project/xmp/$pkgname/$pkgver/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+depends=("libxmp" "alsa-lib")
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

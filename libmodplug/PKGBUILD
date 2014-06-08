@@ -1,0 +1,25 @@
+pkgname=libmodplug
+pkgver=0.8.8.5
+pkgrel=1
+pkgdesc=".MOD/.S3M/.XM/.IT/... player"
+arch=('i686' 'x86_64')
+url="http://modplug-xmms.sourceforge.net"
+source=("http://downloads.sourceforge.net/project/modplug-xmms/$pkgname/$pkgver/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  #sed -i "s/\/lib\/cpp/\/bin\/cpp/g" configure
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  CFLAGS="$CFLAGS -fPIC" ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

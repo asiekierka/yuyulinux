@@ -9,13 +9,14 @@ url="http://alsa-project.org"
 license=('GPL')
 options=('strip' 'debug' 'libtool')
 source=("ftp://ftp.alsa-project.org/pub/lib/$pkgname-$pkgver.tar.bz2"
+	"alsa-lib-fix-global-h.patch"
 	"alsa-lib_pcm_h.patch"
 	"alsa-lib_mixed_types.patch"
 	"alsa-lib_mips_atomic.patch"
 	"alsa-lib_mask_inline.patch"
 	"alsa-lib_kernel_off_t.patch"
 	"alsa-lib-portable-mutex.patch")
-md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 build() {
   cd "$pkgname-$pkgver"
@@ -28,6 +29,13 @@ build() {
   patch -p1 < "$srcdir"/alsa-lib_mask_inline.patch
   patch -p1 < "$srcdir"/alsa-lib_kernel_off_t.patch
   patch -p1 < "$srcdir"/alsa-lib-portable-mutex.patch
+
+  patch -p0 < "$srcdir"/alsa-lib-fix-global-h.patch
+
+  for i in include/asoundlib.h include/asoundlib-head.h include/local.h; do
+    echo "patching $i (<sys/poll.h> -> <poll.h>)"
+    sed -i "s/<sys\/poll\.h>/<poll\.h>/g" $i;
+  done
 
   # --without-versioned disables a 10-year-old ALSA API
 

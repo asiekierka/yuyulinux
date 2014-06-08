@@ -1,4 +1,4 @@
-pkgname=("linux-libre" "linux-libre-headers")
+pkgname=("linux-libre" "linux-libre-headers" "linux-libre-firmware")
 pkgver=3.14.5
 pkgrel=1
 pkgdesc="fully free Linux kernel"
@@ -35,7 +35,7 @@ build() {
   export ARCH=$CARCH
 
   make allnoconfig KCONFIG_ALLCONFIG="../linux.config"
-  make
+  make bzImage modules
 }
 
 package_linux-libre() {
@@ -58,4 +58,11 @@ package_linux-libre-headers() {
 
   make INSTALL_HDR_PATH="$pkgdir" headers_install
   find "$pkgdir"/include \( -name .install -o -name ..install.cmd \) -delete
+}
+
+package_linux-libre-firmware() {
+  install -d -m755 $pkgdir/lib/firmware
+
+  cd linux-$pkgver
+  make INSTALL_FW_PATH=$pkgdir/lib/firmware firmware_install
 }

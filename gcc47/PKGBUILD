@@ -1,10 +1,9 @@
-pkgname=gcc47
+pkgname=("gcc47" "libstdc++")
 pkgver=4.7.3
 pkgrel=1
 pkgdesc="GNU C Compiler"
 arch=('i686' 'x86_64')
-depends=('libgmp' 'libmpfr' 'libmpc' 'zlib' 'binutils>=2.24')
-provides=('gcc')
+depends=('libgmp' 'libmpfr' 'libmpc' 'zlib' 'binutils>=2.24' 'libstdc++')
 groups=("base-dev")
 url="http://www.gnu.org/software/gcc/"
 license=('GPL')
@@ -14,11 +13,31 @@ md5sums=('SKIP')
 prepare() {
   cd "gcc-$pkgver"
   
+  # gcc fixes
   sed -i 's/linux-gnu\* |/linux-gnu* | linux-musl* |/' config.sub
   sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
   sed -i 's@/lib/ld-linux.so.2@/lib/ld-musl-i386.so.1@' gcc/config/i386/linux.h
   sed -i 's@/lib/ld-linux.so.2@/lib/ld-musl-i386.so.1@' gcc/config/i386/linux64.h
   sed -i 's@/lib64/ld-linux-x86-64.so.2@/lib/ld-musl-x86_64.so.1@' gcc/config/i386/linux64.h
+
+  # g++ fixes
+  sed -i 's,gcc_no_link=yes,gcc_no_link=no,' ./libstdc++-v3/configure
+  mv ./libstdc\+\+-v3/config/os/gnu-linux ./libstdc\+\+-v3/config/os/gnu-linux.org
+  cp -r ./libstdc\+\+-v3/config/os/generic ./libstdc\+\+-v3/config/os/gnu-linux
+  cp ./libstdc++-v3/config/os/gnu-linux.org/arm-eabi-extra.ver ./libstdc++-v3/config/os/gnu-linux/
+
+  # fixes for the removal of /usr
+  for i in gcc/Makefile.in fixincludes/fixinc.in gcc/configure libcpp/configure \
+    intl/configure libstdc++-v3/configure libjava/classpath/configure \
+    libjava/configure gcc/config.gcc; do
+    echo "patching $i (/usr -> /)"
+    sed -i "s/\/usr\//\//g" $i
+    sed -i "s/\/usr/\//g" $i
+  done
+
+  # misc fixes
+  mv ./libitm/config/linux/x86 ./libitm/config/linux/x86_glibc
+  cp -r ./libitm/config/generic ./libitm/config/linux/x86
 
   if [ -f "./config.cache" ]; then
     rm config.cache
@@ -28,18 +47,33 @@ prepare() {
 build() {
   cd "gcc-$pkgver"
   LDFLAGS="-Wl,--no-keep-memory" ./configure -C \
-      --with-headers=no --prefix=/ --disable-shared \
+      --with-headers=no --prefix=/ --enable-shared=libstdc++ \
       --disable-multilib --disable-nls --disable-mudflap --disable-libmudflap \
       --disable-libssp --disable-libgomp --disable-debug --disable-bootstrap \
       --enable-lto --with-system-zlib --with-target-libiberty=no --with-target-zlib=no \
-      --enable-languages=c --enable-clocale=generic --build=$CARCH-unknown-linux-musl \
-      --libdir=/lib --libexecdir=/lib --mandir=/share/man --infodir=/share/info
+      --enable-languages=c,c++ --enable-clocale=generic --build=$CARCH-unknown-linux-musl \
+      --libdir=/lib --libexecdir=/lib --mandir=/share/man --infodir=/share/info --oldincludedir=/include
 
   make
 }
 
-package() {
+package_gcc47() {
+  provides=("gcc" "g++")
   cd "gcc-$pkgver"
   make DESTDIR="${pkgdir}" install-gcc install-lto-plugin install-target-libgcc
   ln -sf gcc "${pkgdir}"/bin/cc
+}
+
+package_libstdc++() {
+  depends=('')
+
+  cd "gcc-$pkgver"
+  make DESTDIR="${pkgdir}" install-target-libstdc++-v3
+
+  cd $pkgdir
+  if [ -d "lib64" ]; then
+    mkdir -p lib
+    cp -Rpv lib64/* lib/
+    rm -r lib64
+  fi
 }

@@ -1,0 +1,20 @@
+pkgname=libxmp
+pkgver=4.2.7
+pkgrel=1
+pkgdesc="module playback library"
+arch=('i686' 'x86_64')
+url="http://xmp.sourceforge.net"
+source=("http://downloads.sourceforge.net/project/xmp/$pkgname/$pkgver/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}
