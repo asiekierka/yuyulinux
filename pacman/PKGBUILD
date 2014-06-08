@@ -1,0 +1,56 @@
+pkgname=pacman
+pkgver=4.1.2
+pkgrel=1
+pkgdesc="A library-based package manager with dependency support"
+arch=('i686' 'x86_64')
+url="http://www.archlinux.org/pacman/"
+license=('GPL')
+groups=('base')
+depends=('bash>=4.3' 'libarchive>=3.1.2' 'gnupg' 'openssl')
+checkdepends=('python2' 'fakechroot')
+optdepends=('fakeroot: for makepkg usage as normal user')
+backup=(etc/pacman.conf etc/makepkg.conf)
+options=('strip' 'debug')
+source=(ftp://ftp.archlinux.org/other/pacman/$pkgname-$pkgver.tar.gz{,.sig}
+        pacman-4.1.2-musl.diff
+        makepkg.conf
+	pacman.conf)
+md5sums=('063c8b0ff6bdf903dc235445525627cd'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+	 'SKIP')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  patch -p1 < ../pacman-4.1.2-musl.diff
+  sed -i "s/ --apparent-size//g" configure
+  sed -i "s/\/usr\/lib\/debug/\/lib\/debug/g" scripts/makepkg.sh.in
+  sed -i "s/\/usr/\//g" scripts/makepkg.sh.in
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --sysconfdir=/etc \
+    --localstatedir=/var --enable-doc \
+    --with-scriptlet-shell=/bin/bash \
+    --with-ldconfig=/bin/ldconfig
+  make
+  make -C contrib
+}
+
+check() {
+  make -C "$pkgname-$pkgver" check
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+
+  make DESTDIR="$pkgdir" install
+  make DESTDIR="$pkgdir" -C contrib install
+
+  cp ../makepkg.conf "$pkgdir"/etc/makepkg.conf
+  cp ../pacman.conf "$pkgdir"/etc/pacman.conf
+
+  sed -i "s/\/usr\/bin/\/bin/g" "$pkgdir"/bin/makepkg
+}

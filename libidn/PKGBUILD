@@ -1,0 +1,22 @@
+pkgname=libidn
+pkgver=1.28
+pkgrel=1
+pkgdesc="International Domain Name library"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://gnu.org/s/libidn"
+license=('GPL')
+source=("http://ftp.gnu.org/gnu/libidn/libidn-$pkgver.tar.gz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+build() {
+  cd "libidn-$pkgver"
+  ./configure --prefix=/ --disable-nls
+  make
+}
+
+package() {
+  cd "libidn-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

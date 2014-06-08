@@ -1,0 +1,24 @@
+pkgname=pkgconf
+pkgver=0.9.5
+pkgrel=1
+pkgdesc='lightweight pkg-config replacement'
+arch=('i686' 'x86_64')
+groups=("base-dev")
+url='http://github.com/pkgconf/pkgconf'
+license=('custom')
+provides=('pkg-config')
+source=("http://tortois.es/~nenolod/distfiles/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+
+build() {
+	cd ${srcdir}/${pkgname}-${pkgver}
+
+	./configure --prefix=/
+	make
+}
+
+package() {
+	cd ${srcdir}/${pkgname}-${pkgver}
+	make DESTDIR=${pkgdir} install
+	ln -s /bin/pkgconf "$pkgdir"/bin/pkg-config
+}

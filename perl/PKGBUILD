@@ -1,0 +1,54 @@
+pkgname=("perl" "perl-doc")
+pkgbase=perl
+pkgver=5.20.0
+pkgrel=1
+pkgdesc='Perl language interpreter'
+arch=('i686' 'x86_64')
+url='http://www.cpan.org/'
+license=('custom')
+source=("http://www.cpan.org/src/5.0/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+
+prepare() {
+	cd ${srcdir}/${pkgname}-${pkgver}
+	sed -i "s,-fstack-protector,-fnostack-protector,g" ./Configure
+}	
+
+build() {
+	cd ${srcdir}/${pkgname}-${pkgver}
+	
+	./Configure -des -Accflags="-D_GNU_SOURCE $CFLAGS" -Dcc=gcc \
+		-Dprefix=/ -Dvendorprefix=/ -Dinstallprefix="${pkgdir}" \
+		-Dprivlib=/lib/perl5/core_perl \
+		-Darchlib=/lib/perl5/core_perl \
+		-Dsitelib=/lib/perl5/site_perl \
+		-Dsitearch=/lib/perl5/site_perl \
+		-Dvendorlib=/lib/perl5/vendor_perl \
+		-Dvendorarch=/lib/perl5/vendor_perl \
+		-Dscriptdir=/bin -Dsitescript=/bin -Dvendorscript=/bin \
+		-Dinc_version_list=none \
+		-Dman1dir=/share/man/man1 -Dman1ext=1perl \
+		-Dman1dir=/share/man/man3 -Dman1ext=3perl
+	make -j1
+}
+
+package_perl() {
+	cd ${srcdir}/${pkgbase}-${pkgver}
+	make -j1 DESTDIR=${pkgdir} install
+
+	sed -i s@"${pkgdir}"@@g "${pkgdir}"/lib/perl5/core_perl/Config_heavy.pl
+
+	ln -sf perl${pkgver} "${pkgdir}"/bin/perl
+
+	cd "${pkgdir}"
+	rm *.0
+	rm -r share/man
+}
+
+package_perl-doc() {
+	cd ${srcdir}/${pkgbase}-${pkgver}
+	make DESTDIR=${pkgdir} install
+
+	cd "${pkgdir}"
+	rm -r bin lib share/perl5 *.0
+}

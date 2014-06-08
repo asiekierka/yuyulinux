@@ -1,0 +1,24 @@
+pkgname=ngetty
+pkgver=1.2rc1
+_pkgver=1.2-rc1
+pkgrel=1
+pkgdesc="lightweight getty"
+arch=('i686' 'x86_64')
+url="http://riemann.fmi.uni-sofia.bg/ngetty/"
+license=('GPL')
+source=("http://riemann.fmi.uni-sofia.bg/ngetty/$pkgname-$_pkgver.tar.gz" "service")
+md5sums=('SKIP' 'SKIP')
+
+build() {
+  cd "$pkgname-$_pkgver"
+  make
+}
+
+package() {
+  cd "$pkgname-$_pkgver"
+  make DESTDIR="$pkgdir" sbin_prefix="$pkgdir/bin" usrbin_prefix="$pkgdir/bin" mandir="$pkgdir/share/man" install
+
+  mkdir -p "$pkgdir"/service/ngetty/env
+  cp -pv "$srcdir"/service "$pkgdir"/service/ngetty/run
+  echo "linux" > "$pkgdir"/service/ngetty/env/TERM
+}

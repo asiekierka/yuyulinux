@@ -1,0 +1,20 @@
+--- libnl-tiny-49d9e43e/src/include/linux/if.h	2012-08-28 01:45:17.000000000 +0000
++++ libnl-tiny-49d9e43e.patched/src/include/linux/if.h	2012-09-08 14:07:07.636000002 +0000
+@@ -116,16 +116,6 @@
+  *	being very small might be worth keeping for clean configuration.
+  */
+ 
+-struct ifmap 
+-{
+-	unsigned long mem_start;
+-	unsigned long mem_end;
+-	unsigned short base_addr; 
+-	unsigned char irq;
+-	unsigned char dma;
+-	unsigned char port;
+-	/* 3 bytes spare */
+-};
+-
++#include <net/if.h>
+ 
+ #endif /* _LINUX_IF_H */

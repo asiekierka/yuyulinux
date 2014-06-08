@@ -1,0 +1,23 @@
+pkgname=libmpc
+pkgver=1.0.2
+pkgrel=1
+pkgdesc="GNU MPC library"
+arch=('i686' 'x86_64')
+groups=("base-dev")
+url="http://mpc.multiprecision.org"
+license=('GPL')
+depends=("libgmp" "libmpfr")
+source=("http://ftp.gnu.org/gnu/mpc/mpc-$pkgver.tar.gz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+build() {
+  cd "mpc-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "mpc-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

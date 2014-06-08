@@ -1,0 +1,22 @@
+pkgname=libgmp
+pkgver=6.0.0a
+pkgrel=1
+pkgdesc="GNU MP Bignum library"
+arch=('i686' 'x86_64')
+groups=("base-dev")
+url="http://gmplib.org"
+license=('GPL')
+source=("http://ftp.gnu.org/gnu/gmp/gmp-$pkgver.tar.xz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+build() {
+  cd "gmp-6.0.0"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "gmp-6.0.0"
+  make DESTDIR="$pkgdir" install
+}

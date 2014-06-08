@@ -1,0 +1,20 @@
+pkgname=nasm
+pkgver=2.11.05
+pkgrel=1
+pkgdesc="netwide assembler"
+arch=('i686' 'x86_64')
+url="http://nasm.net"
+license=('BSD')
+source=("http://www.nasm.us/pub/$pkgname/releasebuilds/$pkgver/$pkgname-$pkgver.tar.xz")
+md5sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make INSTALLROOT="$pkgdir" install
+}

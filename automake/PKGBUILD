@@ -1,0 +1,27 @@
+pkgname=automake
+pkgver=1.14.1
+pkgrel=1
+pkgdesc="makefile.in generator"
+arch=('i686' 'x86_64')
+groups=("base-dev")
+url="http://gnu.org/software/automake/"
+license=('GPL')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz")
+md5sums=('SKIP')
+depends=('autoconf')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+
+  rm "$pkgdir"/bin/aclocal
+  rm "$pkgdir"/bin/automake
+  ln -s aclocal-1.14 "$pkgdir"/bin/aclocal
+  ln -s automake-1.14 "$pkgdir"/bin/automake
+}

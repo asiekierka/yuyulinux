@@ -1,0 +1,2 @@
+#!/bin/sh
+exec chpst -e ./env /bin/ngetty 1 2 3 4

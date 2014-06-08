@@ -1,0 +1,25 @@
+pkgname=wpa-supplicant
+pkgver=2.2
+pkgrel=1
+pkgdesc='WPA connection manager'
+arch=('i686' 'x86_64')
+groups=("base")
+url='http://hostap.epitest.fi/wpa_supplicant'
+source=("http://hostap.epitest.fi/releases/wpa_supplicant-$pkgver.tar.gz"
+        "wpa-supplicant.config"
+	"wpa_supplicant.conf")
+backup=("etc/wpa_supplicant.conf")
+md5sums=("SKIP" "SKIP" "SKIP")
+depends=("openssl" "zlib" "libnl-tiny")
+
+build() {
+	cd wpa_supplicant-$pkgver/wpa_supplicant
+        cp $srcdir/wpa-supplicant.config .config
+	make
+}
+
+package() {
+	cd wpa_supplicant-$pkgver/wpa_supplicant
+	make BINDIR=/bin DESTDIR=${pkgdir} install
+	install -D -m 600 "$srcdir"/wpa_supplicant.conf "$pkgdir"/etc/wpa_supplicant.conf
+}

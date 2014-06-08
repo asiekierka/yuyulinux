@@ -1,0 +1,25 @@
+pkgname=autoconf
+pkgver=2.69
+pkgrel=1
+pkgdesc="configure file generator"
+arch=('i686' 'x86_64')
+groups=("base-dev")
+url="http://gnu.org/software/autoconf/"
+license=('GPL')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz")
+md5sums=('SKIP')
+depends=('m4')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+
+  # conflict with binutils
+  rm "$pkgdir"/share/info/standards.info
+}

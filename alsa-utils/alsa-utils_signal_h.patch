@@ -1,0 +1,11 @@
+--- alsa-utils-1.0.27.2.org/alsaloop/alsaloop.c	2013-07-23 01:48:03.592000003 +0000
++++ alsa-utils-1.0.27.2/alsaloop/alsaloop.c	2013-07-23 01:49:12.786000003 +0000
+@@ -31,7 +31,7 @@
+ #include <math.h>
+ #include <pthread.h>
+ #include <syslog.h>
+-#include <sys/signal.h>
++#include <signal.h>
+ #include "alsaloop.h"
+ 
+ struct loopback_thread {

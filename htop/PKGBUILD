@@ -1,0 +1,22 @@
+pkgname=htop
+pkgver=1.0.3
+pkgrel=1
+pkgdesc="process monitor"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://hisham.hm/htop"
+license=('GPL')
+source=("http://hisham.hm/$pkgname/releases/$pkgver/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  ln -s "/bin/htop" "$pkgdir"/bin/top
+}

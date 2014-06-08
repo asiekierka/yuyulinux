@@ -1,0 +1,21 @@
+pkgname=zlib
+pkgver=1.2.8
+pkgrel=1
+pkgdesc="data compression library"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://zlib.net"
+license=('BSD')
+source=("http://zlib.net/current/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  CC="gcc" ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

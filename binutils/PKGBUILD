@@ -1,0 +1,28 @@
+pkgname=binutils
+pkgver=2.24
+pkgrel=1
+pkgdesc="binutils for linking and assembly"
+arch=('i686' 'x86_64')
+groups=("base-dev")
+url="http://www.gnu.org/software/binutils"
+license=('GPL')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  if [ -f "./config.cache" ]; then
+    rm config.cache
+  fi
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  CC="gcc -static" LDFLAGS="-Wl,-static" CFLAGS="-D_GNU_SOURCE -D_LARGEFILE64_SOURCE" ./configure -C --disable-nls --disable-werror --prefix=/ --enable-initfini-array --disable-shared
+  make all-binutils all-ld all-gas
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="${pkgdir}" tooldir=/ install-binutils install-ld install-gas
+}

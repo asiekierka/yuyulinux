@@ -1,0 +1,23 @@
+pkgname=musl
+pkgver=1.1.2
+pkgrel=1
+pkgdesc="musl C library"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://musl-libc.org"
+license=('BSD')
+source=("http://www.musl-libc.org/releases/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --syslibdir=/lib
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  mkdir -p "$pkgdir"/bin
+  ln -sf "../lib/libc.so" "$pkgdir"/bin/ldd
+}

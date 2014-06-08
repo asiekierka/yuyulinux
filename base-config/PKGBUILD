@@ -1,0 +1,38 @@
+pkgname=base-config
+pkgver=0.1
+pkgrel=1
+pkgdesc="base configuration"
+arch=('i686' 'x86_64')
+groups=("base")
+source=("generate-getty.sh" "base-config.install")
+md5sums=("SKIP" "SKIP")
+backup=("etc/passwd" "etc/hostname")
+depends=("busybox" "runit")
+install="base-config.install"
+
+build() {
+  cd .
+}
+
+package() {
+  cd "$pkgdir"
+  mkdir -p etc
+  mkdir -p dev
+  mkdir -p dev/pts
+  mkdir -p mnt
+  mkdir -p proc
+  mkdir -p sys
+  mkdir -p root
+  mkdir -p service
+
+  echo "yuyushiki" >etc/hostname
+  echo "root::0:0:root:/root:/bin/sh" >etc/passwd
+
+  chmod -R 555 proc
+  chmod -R 555 sys
+
+  "$srcdir"/generate-getty.sh "$pkgdir"/service 1
+  "$srcdir"/generate-getty.sh "$pkgdir"/service 2
+  "$srcdir"/generate-getty.sh "$pkgdir"/service 3
+  "$srcdir"/generate-getty.sh "$pkgdir"/service 4
+}

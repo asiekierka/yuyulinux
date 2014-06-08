@@ -1,0 +1,31 @@
+pkgname=bzip2
+pkgver=1.0.6
+pkgrel=1
+pkgdesc=".bz2 data compression program"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://bzip.org"
+license=('BSD')
+source=("http://www.bzip.org/$pkgver/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  make clean
+  CFLAGS="$CFLAGS -fPIC" make -f Makefile-libbz2_so
+  mkdir _out_so
+  cp -a libbz2.so.$pkgver _out_so/
+  make clean
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make install PREFIX="$pkgdir"
+  cp _out_so/* "$pkgdir"/lib
+  ln -s libbz2.so.$pkgver "$pkgdir"/lib/libbz2.so.1.0
+  ln -s libbz2.so.$pkgver "$pkgdir"/lib/libbz2.so.1
+  ln -s libbz2.so.$pkgver "$pkgdir"/lib/libbz2.so
+  mkdir -p "$pkgdir"/share
+  mv "$pkgdir"/man "$pkgdir"/share/
+}

@@ -1,0 +1,21 @@
+pkgname=syslinux
+pkgver=6.02
+pkgrel=1
+pkgdesc="bootloader"
+arch=('i686' 'x86_64')
+url="http://syslinux.org"
+license=('GPL')
+source=("https://www.kernel.org/pub/linux/utils/boot/$pkgname/$pkgname-$pkgver.tar.xz")
+md5sums=('SKIP')
+depends=("libuuid")
+makedepends=("perl" "linux-libre-headers" "nasm")
+
+build() {
+  cd "$pkgname-$pkgver"
+  make -j1 PYTHON="" bios
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make -j1 INSTALLROOT="$pkgdir" MANDIR=/share/man BINDIR=/bin SBINDIR=/bin LIBDIR=/lib DATADIR=/share PYTHON="" bios install
+}

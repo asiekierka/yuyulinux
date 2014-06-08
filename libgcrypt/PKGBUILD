@@ -1,0 +1,22 @@
+pkgname=libgcrypt
+pkgver=1.6.1
+pkgrel=1
+pkgdesc="GNU crpyto library"
+arch=('i686' 'x86_64')
+url="http://gnupg.org"
+license=('GPL')
+source=("ftp://ftp.gnupg.org/gcrypt/$pkgname/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+options=('strip' 'debug')
+depends=('libgpg-error')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

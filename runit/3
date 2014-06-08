@@ -1,0 +1,18 @@
+#!/bin/sh
+exec 2>&1
+
+PATH=/bin
+
+LAST=0
+test -x /etc/runit/reboot && LAST=6
+
+echo 'Waiting for services to stop...'
+sv -w196 force-stop /service/*
+sv exit /service/*
+
+echo 'Unmounting hardware...'
+umount -a -r
+swapoff -a
+
+echo 'Shutting down.'
+

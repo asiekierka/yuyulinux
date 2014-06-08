@@ -1,0 +1,35 @@
+# credits to sabotage devteam
+
+pkgname=libnl-tiny
+pkgver=1.0
+pkgrel=1
+pkgfile=libnl-tiny-49d9e43e
+pkgdesc="tiny netlink library"
+arch=('i686' 'x86_64')
+source=("http://ftp.barfooze.de/pub/sabotage/tarballs/$pkgfile.tar.xz"
+        "Makefile" "libnl-tiny_if_h.patch")
+md5sums=('SKIP' 'SKIP' 'SKIP')
+options=('strip' 'debug')
+
+prepare() {
+	cd $pkgfile
+	patch -p1 < $srcdir/libnl-tiny_if_h.patch
+}
+
+build() {
+	cd $pkgfile
+	cp $srcdir/Makefile src/
+	CFLAGS="$CFLAGS -fPIC" make -C src
+	make -C src libnl-tiny.a
+}
+
+package() {
+	cd $pkgfile
+	mkdir -p "$pkgdir"/include/libnl-tiny
+	cp -rv src/include/* "$pkgdir"/include/libnl-tiny/
+
+	mkdir -p "$pkgdir"/lib/pkgconfig
+	cp src/libnl-tiny.so "$pkgdir"/lib/
+	cp src/libnl-tiny.a "$pkgdir"/lib/
+	cp files/libnl-tiny.pc "$pkgdir"/lib/pkgconfig/
+}

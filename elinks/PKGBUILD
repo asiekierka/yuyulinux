@@ -1,0 +1,24 @@
+pkgname=elinks
+pkgver=0.11.7
+pkgrel=1
+pkgdesc="text-mode web browser"
+arch=('i686' 'x86_64')
+url="http://elinks.or.cz"
+source=("http://elinks.or.cz/download/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+depends=("zlib" "openssl")
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --without-gpm --with-zlib --without-bzlib --with-idn \
+    --without-spidermonkey --without-guile --without-perl --without-python \
+    --without-lua --without-ruby --with-openssl --without-x \
+    --disable-nls --enable-256-colors
+
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

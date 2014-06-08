@@ -1,0 +1,11 @@
+diff -rup pacman-4.1.2/lib/libalpm/be_sync.c pacman-diff/lib/libalpm/be_sync.c
+--- pacman-4.1.2/lib/libalpm/be_sync.c	2013-06-06 05:47:26.000000000 +0200
++++ pacman-diff/lib/libalpm/be_sync.c	2014-05-24 00:10:14.911844667 +0200
+@@ -23,6 +23,7 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <unistd.h>
++#include <limits.h>
+ 
+ /* libarchive */
+ #include <archive.h>

@@ -1,0 +1,24 @@
+pkgname=wireless-tools
+pkgver=29
+pkgrel=1
+pkgdesc='Wireless connection management utilities.'
+arch=('i686' 'x86_64')
+groups=("base")
+url='http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html'
+source=("http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.$pkgver.tar.gz")
+md5sums=("SKIP")
+
+prepare() {
+	cd ${srcdir}/wireless_tools.$pkgver
+	sed -i "s/sbin/bin/g" Makefile
+}
+
+build() {
+	cd ${srcdir}/wireless_tools.$pkgver
+	make
+}
+
+package() {
+	cd ${srcdir}/wireless_tools.$pkgver
+	make PREFIX=${pkgdir} install
+}

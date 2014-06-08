@@ -1,0 +1,36 @@
+# big thanks to sabotage linux devs for the patches
+
+pkgname=alsa-utils
+pkgver=1.0.27.2
+pkgrel=1
+pkgdesc="ALSA sound library"
+arch=('i686' 'x86_64')
+url="http://alsa-project.org"
+license=('GPL')
+source=("ftp://ftp.alsa-project.org/pub/utils/$pkgname-$pkgver.tar.bz2"
+	"alsa-utils_mixer_widget.patch"
+	"alsa-utils_signal_h.patch"
+	"alsa-utils_portable-mutex.patch")
+md5sums=("SKIP" "SKIP" "SKIP" "SKIP")
+depends=("ncurses" "alsa-lib")
+
+build() {
+  cd "$pkgname-$pkgver"
+
+  patch -p1 < "$srcdir"/alsa-utils_mixer_widget.patch
+  patch -p1 < "$srcdir"/alsa-utils_signal_h.patch
+  patch -p1 < "$srcdir"/alsa-utils_portable-mutex.patch
+
+  CFLAGS="$CFLAGS -I/include/ncursesw -D_BSD_SOURCE -D_POSIX_C_SOURCE=200809L -D_GNU_SOURCE" ./configure \
+    --prefix=/ --disable-nls --disable-xmlto --disable-alsatest \
+    --with-curses=ncursesw --sbindir=/bin
+
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+
+  rm -r "$pkgdir"/lib
+}

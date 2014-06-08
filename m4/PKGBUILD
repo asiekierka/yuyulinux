@@ -1,0 +1,22 @@
+pkgname=m4
+pkgver=1.4.17
+pkgrel=1
+pkgdesc="macro processor"
+arch=('i686' 'x86_64')
+groups=("base-dev")
+url="http://gnu.org/software/m4/"
+license=('GPL')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  rm "$pkgdir"/lib/charset.alias
+}

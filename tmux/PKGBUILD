@@ -1,0 +1,26 @@
+pkgname=tmux
+pkgver=1.9a
+pkgrel=1
+pkgdesc="terminal multiplexer"
+arch=('i686' 'x86_64')
+url="http://tmux.sourceforge.net"
+license=('GPL')
+source=("http://downloads.sourceforge.net/sourceforge/$pkgname/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+depends=("libevent" "ncurses")
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  sed -i "s/<term\.h>/<ncurses\/term\.h>/g" tty-term.c
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  CFLAGS="$CFLAGS -D_GNU_SOURCE" ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

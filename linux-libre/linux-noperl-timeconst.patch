@@ -1,0 +1,27 @@
+--- linux/kernel/Makefile
++++ linux/kernel/Makefile
+@@ -109,19 +109,13 @@
+ 
+ $(obj)/time.o: $(obj)/timeconst.h
+ 
+-quiet_cmd_hzfile = HZFILE  $@
+-      cmd_hzfile = echo "hz=$(CONFIG_HZ)" > $@
++hostprogs-y    += mktimeconst
++quiet_cmd_mktimeconst = TIMEC   $@
++	cmd_mktimeconst = $(obj)/mktimeconst $(CONFIG_HZ) $@ || ( rm -f $@ && exit 1 )
+ 
+-targets += hz.bc
+-$(obj)/hz.bc: $(objtree)/include/config/hz.h FORCE
+-	$(call if_changed,hzfile)
+-
+-quiet_cmd_bc  = BC      $@
+-      cmd_bc  = bc -q $(filter-out FORCE,$^) > $@
+-
+ targets += timeconst.h
+-$(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
+-	$(call if_changed,bc)
++$(obj)/timeconst.h: $(obj)/mktimeconst FORCE
++	$(call if_changed,mktimeconst)
+ 
+ ###############################################################################
+ #

@@ -1,0 +1,21 @@
+pkgname=gnupg
+pkgver=1.4.16
+pkgrel=1
+pkgdesc="free software OpenPGP implementation"
+arch=('i686' 'x86_64')
+url="http://gnupg.org"
+groups=("base")
+license=('GPL')
+source=("ftp://ftp.gnupg.org/gcrypt/gnupg/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --disable-nls --libexecdir=/lib
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install -j1
+}

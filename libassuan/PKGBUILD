@@ -1,0 +1,28 @@
+pkgname=libassuan
+pkgver=2.1.1
+pkgrel=1
+pkgdesc="IPC library"
+arch=('i686' 'x86_64')
+url="http://gnupg.org"
+license=('GPL')
+source=("ftp://ftp.gnupg.org/gcrypt/$pkgname/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+options=('strip' 'debug')
+depends=('libgpg-error')
+
+prepare() {
+  # /usr/bin/file, among others, has a hardcoded path
+  cd "$pkgname-$pkgver"
+  sed -i "s/\/usr\/bin/\/bin/g" configure
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

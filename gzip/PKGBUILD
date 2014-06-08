@@ -1,0 +1,22 @@
+pkgname=gzip
+pkgver=1.6
+pkgrel=1
+pkgdesc=".gz data compression program"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://gnu.org/software/gzip/gzip.html"
+license=('BSD')
+source=("http://ftp.gnu.org/gnu/gzip/$pkgname-$pkgver.tar.xz")
+md5sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  rm "$pkgdir"/lib/charset.alias
+}

@@ -1,0 +1,25 @@
+pkgname=wget
+pkgver=1.15
+pkgrel=1
+pkgdesc="GNU file retrieving suite"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://gnu.org/software/wget/"
+license=('GPL')
+depends=("openssl" "libidn")
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz")
+backup=('etc/wgetrc')
+md5sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  # use openssl because we already nclude it, but only use it for SSL
+  ./configure --prefix=/ --disable-nls --with-ssl=openssl --disable-debug --with-libidn=/lib
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  rm "$pkgdir"/lib/charset.alias
+}

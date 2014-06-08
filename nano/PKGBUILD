@@ -1,0 +1,21 @@
+pkgname=nano
+pkgver=2.2.6
+pkgrel=1
+pkgdesc="text editor, clone of pico"
+arch=('i686' 'x86_64')
+depends=('musl' 'ncurses')
+url="http://nano-editor.org"
+license=('GPL')
+source=("http://www.nano-editor.org/dist/v2.2/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

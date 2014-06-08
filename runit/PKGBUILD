@@ -1,0 +1,47 @@
+# heavily based on AUR runit-musl
+
+pkgname=runit
+pkgver=2.1.1
+pkgrel=1
+pkgdesc="runit init system"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://smarden.org/runit"
+license=('GPL')
+source=("http://smarden.org/$pkgname/$pkgname-$pkgver.tar.gz" "1" "2" "3" "svmgr")
+md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+
+prepare() {
+  cd admin/"$pkgname-$pkgver"/src
+  sed -i "s/sbin/bin/g" runit.h
+}
+
+build() {
+  cd admin/"$pkgname-$pkgver"/src
+  make
+}
+
+package() {
+  cd admin/"$pkgname-$pkgver"
+
+  install -d -m0755 "$pkgdir/var"
+
+  install -d -m0755 "$pkgdir/bin"
+  install -s -m0755 $srcdir/admin/$pkgname-$pkgver/src/{chpst,runit,runit-init,runsv,runsvchdir,runsvdir,sv,svlogd,utmpset} $pkgdir/bin
+  install -m0755 $srcdir/svmgr "$pkgdir/bin"
+  ln -s /bin/runit-init "$pkgdir/bin/init"
+
+  install -d -m0755 $pkgdir/share/man/man8
+  install -m0644 $srcdir/admin/$pkgname-$pkgver/man/* $pkgdir/share/man/man8
+
+  install -d -m0755 $pkgdir/share/doc/runit
+  install -m0644 $srcdir/admin/$pkgname-$pkgver/doc/*.html $pkgdir/share/doc/runit
+
+  install -D $srcdir/admin/$pkgname-$pkgver/package/COPYING $pkgdir/share/licenses/runit/COPYING
+
+  cd ../..
+
+  mkdir -p "$pkgdir"/service/enabled
+  mkdir -p "$pkgdir"/etc/runit
+  cp -pv 1 2 3 "$pkgdir"/etc/runit/
+}

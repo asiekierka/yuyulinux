@@ -1,0 +1,58 @@
+pkgname=busybox
+pkgver=1.22.1
+pkgrel=1
+pkgdesc="busybox lightweight shell replacement"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://busybox.net"
+license=('GPL')
+makedepends=("linux-libre-headers")
+backup=("etc/mdev.conf" "etc/udhcpc.rc")
+source=("http://busybox.net/downloads/$pkgname-$pkgver.tar.bz2"
+	"busybox.config"
+	"busybox-musl-fixes.patch"
+        "busybox-revert-sed.patch"
+	"gettext"
+        "mdev.conf")
+
+# Gettext is technically not part of busybox, but it fits its spirit so I keep it here.
+
+md5sums=('SKIP' 'SKIP' "SKIP" "SKIP" "SKIP" 'SKIP')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  # Different function names and/or includes
+  patch -p1 < ../busybox-musl-fixes.patch
+
+  # Regression: sed in busybox 1.22.1 is utterly broken, falling back to sed in busybox 1.20.2
+  patch -p1 < ../busybox-revert-sed.patch
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  make allnoconfig KCONFIG_ALLCONFIG=../busybox.config
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make busybox.links
+
+  mkdir -p "$pkgdir"/bin
+  mkdir -p "$pkgdir"/etc
+
+  cp busybox "$pkgdir"/bin/busybox
+
+  cat busybox.links | while read line; do
+    ln -sf /bin/busybox "$pkgdir"/bin/"$(basename $line)"
+  done
+
+  cp examples/udhcp/simple.script "$pkgdir"/etc/udhcpc.rc
+
+  cd ..
+
+  cp gettext "$pkgdir"/bin
+  chmod +x "$pkgdir"/bin/gettext
+
+  cp mdev.conf "$pkgdir"/etc
+}

@@ -1,0 +1,31 @@
+--- autogen.sh	2014-06-08 06:51:11.146735036 +0000
++++ autogen-new.sh	2014-06-08 06:50:59.123466838 +0000
+@@ -70,7 +70,6 @@ run "mkdir -p config/m4"
+ run "mkdir intl"
+ 
+ # execute autotools cmds
+-run "autopoint -f"
+ run "libtoolize --automake --force --copy"
+ run "aclocal --force -I config/m4"
+ run "autoheader"
+--- configure.ac	2014-06-08 06:51:11.146735036 +0000
++++ configure-new.ac	2014-06-08 06:44:06.115704293 +0000
+@@ -57,9 +57,7 @@ solaris*)
+ esac
+ 
+ # Gettext
+-ALL_LINGUAS="fr es cs hu de ru pl it ja pt_BR tr"
+-AM_GNU_GETTEXT
+-AM_GNU_GETTEXT_VERSION([0.18])
++USE_NLS="no"
+ 
+ # Checks for libraries
+ AC_CHECK_LIB(ncurses, initscr, LIBNCURSES_FOUND=1, LIBNCURSES_FOUND=0)
+@@ -1160,7 +1158,6 @@ AC_OUTPUT([Makefile
+            src/plugins/xfer/Makefile
+            src/gui/Makefile
+            src/gui/curses/Makefile
+-           intl/Makefile
+            po/Makefile.in])
+ 
+ # ------------------------------------------------------------------------------

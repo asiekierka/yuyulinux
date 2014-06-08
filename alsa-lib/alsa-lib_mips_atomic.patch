@@ -1,0 +1,28 @@
+--- alsa-lib-1.0.25/include/iatomic.h	2012-01-25 07:56:56.000000000 +0000
++++ alsa-lib-1.0.25-patched/include/iatomic.h	2012-11-02 05:47:09.105284415 +0000
+@@ -683,7 +683,6 @@
+ #endif /* __powerpc__ */
+ 
+ #ifdef __mips__
+-
+ typedef struct { volatile int counter; } atomic_t;
+ 
+ #define ATOMIC_INIT(i)    { (i) }
+@@ -720,7 +719,7 @@
+  * Atomically adds @i to @v.  Note that the guaranteed useful range
+  * of an atomic_t is only 24 bits.
+  */
+-extern __inline__ void atomic_add(int i, atomic_t * v)
++static __inline__ void atomic_add(int i, atomic_t * v)
+ {
+ 	unsigned long temp;
+ 
+@@ -744,7 +743,7 @@
+  * Atomically subtracts @i from @v.  Note that the guaranteed
+  * useful range of an atomic_t is only 24 bits.
+  */
+-extern __inline__ void atomic_sub(int i, atomic_t * v)
++static __inline__ void atomic_sub(int i, atomic_t * v)
+ {
+ 	unsigned long temp;
+ 

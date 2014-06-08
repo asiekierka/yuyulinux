@@ -1,0 +1,61 @@
+pkgname=("linux-libre" "linux-libre-headers")
+pkgver=3.14.5
+pkgrel=1
+pkgdesc="fully free Linux kernel"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://linux-libre.fsfla.org/"
+license=('GPL')
+source=("http://linux-libre.fsfla.org/pub/linux-libre/releases/$pkgver-gnu/linux-libre-$pkgver-gnu.tar.xz"
+	"linux-posix-sed.patch"
+	"linux-noperl-timeconst.patch"
+	"linux-menuconfig.patch"
+        "linux.config"
+        "mktimeconst.c")
+md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+
+prepare() {
+  cd "linux-$pkgver"
+  if [ -f "kernel/mktimeconst.c" ]; then
+    rm kernel/mktimeconst.c
+  fi
+  if [ -f "kernel/timeconst.bc" ]; then
+    rm kernel/timeconst.bc
+  fi
+
+  patch -p1 <../linux-posix-sed.patch
+  patch -p1 <../linux-noperl-timeconst.patch
+  patch -p1 <../linux-menuconfig.patch
+  cp ../mktimeconst.c kernel/mktimeconst.c
+}
+
+build() {
+  cd "linux-$pkgver"
+
+  export ARCH=$CARCH
+
+  make allnoconfig KCONFIG_ALLCONFIG="../linux.config"
+  make
+}
+
+package_linux-libre() {
+  cd "linux-$pkgver"
+
+  make INSTALL_MOD_PATH="$pkgdir" modules_install
+
+  mkdir -p "$pkgdir"/boot
+  cp System.map "$pkgdir"/boot
+
+  if [ "$CARCH" = "i686" -o "$CARCH" = "x86_64" ]; then
+    cp arch/x86/boot/bzImage "$pkgdir"/boot/vmlinuz-$pkgver
+  else
+    cp arch/$CARCH/boot/bzImage "$pkgdir"/boot/vmlinuz-$pkgver
+  fi
+}
+
+package_linux-libre-headers() {
+  cd "linux-$pkgver"
+
+  make INSTALL_HDR_PATH="$pkgdir" headers_install
+  find "$pkgdir"/include \( -name .install -o -name ..install.cmd \) -delete
+}

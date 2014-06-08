@@ -1,0 +1,23 @@
+pkgname=libmpfr
+pkgver=3.1.2
+pkgrel=1
+pkgdesc="GNU MPFR library"
+arch=('i686' 'x86_64')
+groups=("base-dev")
+url="http://mpfr.org"
+license=('LGPL')
+depends=("libgmp")
+source=("http://www.mpfr.org/mpfr-current/mpfr-$pkgver.tar.xz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+build() {
+  cd "mpfr-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "mpfr-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

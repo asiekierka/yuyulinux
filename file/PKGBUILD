@@ -1,0 +1,31 @@
+pkgname=file
+pkgver=5.18
+pkgrel=1
+pkgdesc="File type identification utility"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://www.darwinsys.com/file"
+license=('BSD')
+depends=('musl' 'zlib')
+source=("ftp://ftp.astron.com/pub/$pkgname/$pkgname-$pkgver.tar.gz")
+md5sums=('d420d8f2990cd344673acfbf8d76ff5a')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+
+  make check
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+
+  install -D -m644 COPYING "$pkgdir"/share/licenses/$pkgname/COPYING
+  rmdir "$pkgdir/share/man/man5"
+}
