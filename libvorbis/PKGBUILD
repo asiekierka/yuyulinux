@@ -1,0 +1,25 @@
+pkgname="libvorbis"
+pkgver=1.3.4
+pkgrel=1
+pkgdesc="OGG Vorbis codec"
+arch=('i686' 'x86_64')
+url="http://xiph.org"
+source=("http://svn.xiph.org/releases/vorbis/$pkgname-$pkgver.tar.xz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+depends=("libogg")
+
+prepare() {
+  cd "$pkgname-$pkgver"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR=$pkgdir install
+}

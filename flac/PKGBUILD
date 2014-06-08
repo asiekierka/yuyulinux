@@ -35,6 +35,7 @@ package_libflac++() {
 
 package_flac() {
   depends=("libflac")
+  options=("strip")
   cd "flac-$pkgver"
   make DESTDIR=$pkgdir -C src/flac install
   make DESTDIR=$pkgdir -C src/metaflac install

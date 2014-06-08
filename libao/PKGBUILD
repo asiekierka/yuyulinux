@@ -1,0 +1,25 @@
+pkgname=("libao")
+pkgver=1.1.0
+pkgrel=1
+pkgdesc="cross-platform audio output library"
+arch=('i686' 'x86_64')
+url="http://xiph.org"
+source=("http://svn.xiph.org/releases/ao/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+depends=("alsa-lib")
+
+prepare() {
+  cd "$pkgname-$pkgver"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --enable-alsa --disable-esd --disable-arts --disable-nas --disable-pulse
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR=$pkgdir install
+}

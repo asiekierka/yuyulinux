@@ -1,0 +1,36 @@
+pkgname=("vorbis-tools" "ogg123")
+pkgbase="vorbis-tools"
+pkgver=1.4.0
+pkgrel=1
+pkgdesc="OGG Vorbis tools"
+arch=('i686' 'x86_64')
+url="http://xiph.org"
+source=("http://svn.xiph.org/releases/vorbis/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+depends=("libvorbis" "libogg")
+makedepends=("libao")
+
+prepare() {
+  cd "$pkgbase-$pkgver"
+}
+
+build() {
+  cd "$pkgbase-$pkgver"
+  ./configure --prefix=/ --disable-nls
+  make
+}
+
+package_vorbis-tools() {
+  cd "$pkgbase-$pkgver"
+  make DESTDIR=$pkgdir -C vorbiscomment install
+  make DESTDIR=$pkgdir -C oggdec install
+  make DESTDIR=$pkgdir -C oggenc install
+  make DESTDIR=$pkgdir -C ogginfo install
+  make DESTDIR=$pkgdir -C vcut install
+}
+
+package_ogg123() {
+  depends=("libvorbis" "libogg" "libao" "libflac")
+  cd "$pkgbase-$pkgver"
+  make DESTDIR=$pkgdir -C ogg123 install
+}  
