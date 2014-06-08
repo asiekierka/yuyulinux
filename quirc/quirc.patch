@@ -1,0 +1,48 @@
+diff -rup quirc-1e9aac8/distMakefile quirc/distMakefile
+--- quirc-1e9aac8/distMakefile	2014-06-08 07:23:03.000000000 +0000
++++ quirc/distMakefile	2014-06-08 07:30:38.543909744 +0000
+@@ -1,9 +1,8 @@
+ # gitless Makefile for quIRC
+ 
+ CC ?= gcc
+-OPTFLAGS := -g
+-CFLAGS = -Wall -Wextra -Werror -pedantic -std=gnu99 -D_GNU_SOURCE $(OPTFLAGS)
+-AWK := gawk
++CFLAGS += -Wall -Wextra -Werror -pedantic -std=gnu99 -D_GNU_SOURCE -DASYNCH_NL=0 -DINTMAX_BUG=1
++AWK := awk
+ PREFIX := /usr/local
+-LIBS_ASYNCH_NL := -lanl
++LIBS_ASYNCH_NL := 
+ OPTLIBS = $(LIBS_ASYNCH_NL)
+diff -rup quirc-1e9aac8/gitversion quirc/gitversion
+--- quirc-1e9aac8/gitversion	2014-06-08 07:23:03.000000000 +0000
++++ quirc/gitversion	2014-06-08 07:29:48.574180454 +0000
+@@ -1,12 +1,5 @@
+ #!/bin/sh
+ 
+-VERSION=$(git describe --tags)
+-MAJOR=$(echo $VERSION | cut -d . -f 1)
+-MINOR=$(echo $VERSION | cut -d . -f 2)
+-REST=$(echo $VERSION | cut -d . -f 3)
+-REV=$(echo $REST | cut -d - -f 1)
+-GIT=$(echo $REST | cut -d - -sf 2-)
+-CCVER=$(cc -v 2>&1 | tail -n 1)
+ echo "/*
+ 	quIRC - simple terminal-based IRC client
+ 	Copyright (C) 2010-12 Edward Cree
+@@ -15,10 +8,10 @@ echo "/*
+ 	version.h: contains version number (generated from git describe)
+ */
+ #pragma once
+-#define VERSION_MAJ $MAJOR // Major version
+-#define VERSION_MIN $MINOR // Minor version
+-#define VERSION_REV $REV // Revision number
+-#define VERSION_TXT \"$GIT\" // Rest of git describe
+-#define CC_VERSION	\"$CCVER\" // last line of cc -v" > version.h2
++#define VERSION_MAJ 0 // Major version
++#define VERSION_MIN 9 // Minor version
++#define VERSION_REV 11 // Revision number
++#define VERSION_TXT \"yuyulinux\" // Rest of git describe
++#define CC_VERSION	\"\" // last line of cc -v" > version.h2
+ 
+ if ! cmp version.h version.h2; then mv version.h2 version.h; else rm version.h2; fi

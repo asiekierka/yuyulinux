@@ -1,22 +1,29 @@
 pkgname=quirc
-pkgver=0.9.10
+pkgfile=quirc-1e9aac8
+pkgver=0.9.11
 pkgrel=1
 pkgdesc="lightweight IRC client"
 arch=('i686' 'x86_64')
 groups=("base")
 url="http://jttlov.no-ip.org/projects/quirc"
 license=('GPL')
-source=("http://jttlov.no-ip.org/tar/quirc_$pkgver.tar.gz")
-md5sums=('SKIP')
+source=("http://yuyu.asie.pl/$pkgfile.tar.xz" "quirc.patch")
+md5sums=('SKIP' 'SKIP')
 depends=("ncurses")
 
+prepare() {
+  cd $pkgfile
+  sed -i "s/<term\.h>/<ncurses\/term\.h>/" ttyesc.h
+  patch -p1 < ../quirc.patch
+}
+
 build() {
-  cd "quirc_$pkgver"
+  cd $pkgfile
   make
 }
 
 package() {
-  cd "quirc_$pkgver"
+  cd $pkgfile
   make PREFIX="$pkgdir" install
   mv "$pkgdir"/man "$pkgdir"/share/man
 }
