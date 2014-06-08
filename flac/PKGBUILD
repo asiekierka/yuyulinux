@@ -1,0 +1,41 @@
+pkgname=("libflac" "libflac++" "flac")
+pkgver=1.3.0
+pkgrel=1
+pkgdesc="FLAC decoder and encoder"
+arch=('i686' 'x86_64')
+url="http://xiph.org"
+license=('BSD')
+source=("http://svn.xiph.org/releases/flac/flac-$pkgver.tar.xz")
+md5sums=('SKIP')
+depends=("libogg")
+makedepends=("g++" "libstdc++")
+options=('strip' 'debug')
+
+prepare() {
+  cd "flac-$pkgver"
+}
+
+build() {
+  cd "flac-$pkgver"
+  ./configure --prefix=/ --enable-cpplibs --enable-ogg --disable-xmms
+  make
+}
+
+package_libflac() {
+  pkgdesc="FLAC library"
+  cd "flac-$pkgver"
+  make DESTDIR=$pkgdir -C src/libFLAC install
+}
+
+package_libflac++() {
+  pkgdesc="FLAC library for C++"
+  cd "flac-$pkgver"
+  make DESTDIR=$pkgdir -C src/libFLAC++ install
+}
+
+package_flac() {
+  depends=("libflac")
+  cd "flac-$pkgver"
+  make DESTDIR=$pkgdir -C src/flac install
+  make DESTDIR=$pkgdir -C src/metaflac install
+}
