@@ -1,0 +1,29 @@
+pkgname=git
+pkgver=2.0.0
+pkgrel=1
+pkgdesc="git source control manager"
+arch=('i686' 'x86_64')
+url="http://git-scm.com"
+license=('GPL')
+source=("http://ftp.zut.edu.pl/mirrors/ftp.kernel.org/software/scm/$pkgname/$pkgname-$pkgver.tar.xz")
+md5sums=('SKIP')
+depends=("libcurl" "bash" "openssl")
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  sed -i "s@ac_cv_lib_c_gettext=yes@ac_cv_lib_c_gettext=no@g" configure
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --with-openssl --without-libpcre --with-curl \
+    --without-expat --without-tcltk --with-perl=/bin/perl --with-python=/bin/python \
+    --with-shell=/bin/bash --libexecdir=/lib
+  sed -i "s/<sys\/poll\.h>/<poll\.h>/g" git-compat-util.h
+  make NO_GETTEXT=1 NO_CROSS_DIRECTORY_HARDLINKS=1 MAN_BOLD_LITERAL=1
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" NO_GETTEXT=1 NO_CROSS_DIRECTORY_HARDLINKS=1 MAN_BOLD_LITERAL=1 install
+}

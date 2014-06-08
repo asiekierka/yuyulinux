@@ -11,6 +11,7 @@ md5sums=('SKIP')
 build() {
   cd "$pkgname-$pkgver"
   ./configure --prefix=/
+  sed -i "s/\/lib:\/usr\/lib/\/lib/g" config.h
   make
 }
 

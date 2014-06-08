@@ -1,0 +1,50 @@
+pkgname=openssh
+pkgver=6.6p1
+pkgrel=1
+pkgdesc="SSH tools"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://openssh.com"
+source=("http://piotrkosoft.net/pub/OpenBSD/OpenSSH/portable/$pkgname-$pkgver.tar.gz"
+	"openssh-configure.patch"
+	"openssh-sys_param.patch"
+        "openssh.service"
+	"openssh.log.service")
+md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+depends=("zlib" "openssl")
+install=openssh.install
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  patch -p1 < "$srcdir"/openssh-configure.patch
+  patch -p1 < "$srcdir"/openssh-sys_param.patch
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  CC="gcc -D_BSD_SOURCE -DMISSING_FD_MASK -DMISSING_NFDBITS" \
+    ./configure --prefix=/ --sbindir=/bin --libexecdir=/lib/ssh --sysconfdir=/etc/ssh \
+    --with-privsep-user=nobody --with-md5-passwords --with-mantype=man --mandir=/share/man \
+    --disable-utmp --disable-utmpx --disable-btmp \
+    --disable-wtmp --disable-wtmpx --disable-pututline --disable-pututxline
+
+  sed -i 's@HAVE_DECL_HOWMANY 1@HAVE_DECL_HOWMANY 0@' config.h
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+
+  rm -r "$pkgdir"/var
+
+  # create service
+  mkdir -p "$pkgdir"/service/openssh/log
+  mkdir -p "$pkgdir"/var/log
+  cp "$srcdir"/openssh.service "$pkgdir"/service/openssh/run
+  cp "$srcdir"/openssh.log.service "$pkgdir"/service/openssh/log/run
+
+  chmod +x "$pkgdir"/service/openssh/run
+  chmod +x "$pkgdir"/service/openssh/log/run
+  ln -s /service/openssh/log/main "$pkgdir"/var/log/sshd
+}

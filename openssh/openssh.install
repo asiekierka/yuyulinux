@@ -1,0 +1,7 @@
+post_install() {
+	bin/svmgr enable openssh quiet
+}
+
+pre_remove() {
+	bin/svmgr disable openssh quiet
+}

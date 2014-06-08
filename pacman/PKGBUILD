@@ -27,11 +27,12 @@ prepare() {
   sed -i "s/ --apparent-size//g" configure
   sed -i "s/\/usr\/lib\/debug/\/lib\/debug/g" scripts/makepkg.sh.in
   sed -i "s/\/usr/\//g" scripts/makepkg.sh.in
+  sed -i "s/\/usr\/lib/\/lib/g" configure
 }
 
 build() {
   cd "$pkgname-$pkgver"
-  ./configure --prefix=/ --sysconfdir=/etc \
+  LIBTOOL="false" ./configure --prefix=/ --sysconfdir=/etc \
     --localstatedir=/var --enable-doc \
     --with-scriptlet-shell=/bin/bash \
     --with-ldconfig=/bin/ldconfig
