@@ -1,0 +1,22 @@
+pkgname=quirc
+pkgver=0.9.10
+pkgrel=1
+pkgdesc="lightweight IRC client"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://jttlov.no-ip.org/projects/quirc"
+license=('GPL')
+source=("http://jttlov.no-ip.org/tar/quirc_$pkgver.tar.gz")
+md5sums=('SKIP')
+depends=("ncurses")
+
+build() {
+  cd "quirc_$pkgver"
+  make
+}
+
+package() {
+  cd "quirc_$pkgver"
+  make PREFIX="$pkgdir" install
+  mv "$pkgdir"/man "$pkgdir"/share/man
+}
