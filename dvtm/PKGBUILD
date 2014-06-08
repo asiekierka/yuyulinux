@@ -1,0 +1,30 @@
+pkgname=dvtm
+pkgver=0.11
+pkgrel=1
+pkgdesc="tiling console manager"
+arch=('i686' 'x86_64')
+license=("MIT")
+url="http://www.brain-dump.org/projects/dvtm/"
+source=("http://www.brain-dump.org/projects/$pkgname/$pkgname-$pkgver.tar.gz"
+	"config.mk")
+md5sums=('SKIP' 'SKIP')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+
+  if [ -f config.mk ]; then
+    rm config.mk
+  fi
+
+  cp "$srcdir"/config.mk .
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}
