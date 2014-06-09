@@ -9,8 +9,9 @@ source=("http://piotrkosoft.net/pub/OpenBSD/OpenSSH/portable/$pkgname-$pkgver.ta
 	"openssh-configure.patch"
 	"openssh-sys_param.patch"
         "openssh.service"
-	"openssh.log.service")
-md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+	"openssh.log.service"
+	"sshd_config")
+md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 depends=("zlib" "openssl")
 install=openssh.install
 
@@ -25,7 +26,7 @@ build() {
   CC="gcc -D_BSD_SOURCE -DMISSING_FD_MASK -DMISSING_NFDBITS" \
     ./configure --prefix=/ --sbindir=/bin --libexecdir=/lib/ssh --sysconfdir=/etc/ssh \
     --with-privsep-user=nobody --with-md5-passwords --with-mantype=man --mandir=/share/man \
-    --disable-utmp --disable-utmpx --disable-btmp \
+    --disable-utmp --disable-utmpx --disable-btmp --disable-lastlog \
     --disable-wtmp --disable-wtmpx --disable-pututline --disable-pututxline
 
   sed -i 's@HAVE_DECL_HOWMANY 1@HAVE_DECL_HOWMANY 0@' config.h
@@ -47,4 +48,6 @@ package() {
   chmod +x "$pkgdir"/service/openssh/run
   chmod +x "$pkgdir"/service/openssh/log/run
   ln -s /service/openssh/log/main "$pkgdir"/var/log/sshd
+
+  cp "$srcdir"/sshd_config "$pkgdir"/etc/ssh/sshd_config
 }

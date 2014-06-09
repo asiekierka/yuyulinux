@@ -2,4 +2,5 @@ pkg
 src
 packages
 *.tar.*
+*.tgz
 _UNFINISHED

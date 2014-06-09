@@ -1,0 +1,32 @@
+pkgname=comgt
+pkgver=0.32
+pkgrel=1
+pkgdesc="tiling console manager"
+arch=('i686' 'x86_64')
+license=("GPL")
+url="http://peck.org.uk/comgt.html"
+source=("http://downloads.sourceforge.net/project/comgt/$pkgname/$pkgver/$pkgname.$pkgver.tgz")
+md5sums=('SKIP')
+
+prepare() {
+  cd "$pkgname.$pkgver"
+  sed -i "s/termio/termios/g" comgt.c
+  sed -i "s/-c/$CFLAGS -DXCASE=4 -c/" Makefile
+  sed -i "s@/usr/local@$pkgdir@g" Makefile
+  sed -i "s@/usr/share@$pkgdir/share@g" Makefile
+  sed -i "s@/etc@$pkgdir/etc@g" Makefile
+}
+
+build() {
+  cd "$pkgname.$pkgver"
+  make
+}
+
+package() {
+  mkdir -p "$pkgdir"/bin
+  mkdir -p "$pkgdir"/etc
+  mkdir -p "$pkgdir"/share/man/man1
+
+  cd "$pkgname.$pkgver"
+  make DESTDIR="$pkgdir" install
+}

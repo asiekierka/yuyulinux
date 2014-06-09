@@ -8,7 +8,7 @@ url="http://xiph.org"
 source=("http://svn.xiph.org/releases/vorbis/$pkgname-$pkgver.tar.gz")
 md5sums=('SKIP')
 depends=("libvorbis" "libogg")
-makedepends=("libao")
+makedepends=("libao" "libcurl" "libflac")
 
 prepare() {
   cd "$pkgbase-$pkgver"
@@ -16,7 +16,7 @@ prepare() {
 
 build() {
   cd "$pkgbase-$pkgver"
-  ./configure --prefix=/ --disable-nls
+  ./configure --prefix=/ --disable-nls --without-speex --without-kate
   make
 }
 
@@ -30,7 +30,7 @@ package_vorbis-tools() {
 }
 
 package_ogg123() {
-  depends=("libvorbis" "libogg" "libao" "libflac")
+  depends=("libvorbis" "libogg" "libao" "libflac" "libcurl")
   cd "$pkgbase-$pkgver"
   make DESTDIR=$pkgdir -C ogg123 install
 }  
