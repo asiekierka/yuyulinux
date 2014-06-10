@@ -1,0 +1,20 @@
+pkgname=libcue
+pkgver=1.4.0
+pkgrel=1
+pkgdesc=".cue parsing library"
+arch=('i686' 'x86_64')
+url="http://libcue.sourceforge.net"
+source=("http://downloads.sourceforge.net/project/libcue/$pkgname/$pkgver/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}
