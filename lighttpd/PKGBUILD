@@ -7,17 +7,20 @@ url="http://lighttpd.net"
 source=("http://download.lighttpd.net/lighttpd/releases-1.4.x/$pkgname-$pkgver.tar.xz"
         "lighttpd.conf"
 	"lighttpd.service")
-md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
+md5sums=('SKIP' 'SKIP' 'SKIP')
 depends=("libpcre" "zlib" "bzip2" "openssl")
+makedepends=("lua51")
+optdepends=("lua51: mod_magnet for Lua scripting")
 install="lighttpd.install"
 backup=("etc/lighttpd/lighttpd.conf")
 
 build() {
   cd "$pkgname-$pkgver"
- ./configure --without-libev --without-mysql --without-ldap --without-attr \
+  CFLAGS="$CFLAGS -I/include/lua51" LUA_LIBS="-llua51" LUA_CFLAGS="$CFLAGS" ./configure \
+    --without-libev --without-mysql --without-ldap --without-attr \
     --without-valgrind --with-openssl --without-kerberos5 --with-pcre --with-zlib \
     --with-bzip2 --without-fam --without-webdav-props --without-webdav-locks \
-    --with-gdbm --with-memcache --without-lua --prefix=/ --sbindir=/bin \
+    --with-gdbm --with-memcache --with-lua --prefix=/ --sbindir=/bin \
     --libexecdir=/lib/lighttpd
 
   make
