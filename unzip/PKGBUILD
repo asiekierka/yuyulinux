@@ -1,0 +1,21 @@
+pkgname=unzip
+pkgver=6.0
+_pkgver=60
+pkgrel=1
+pkgdesc='Unzip'
+arch=('i686' 'x86_64')
+groups=("base")
+url='http://www.info-zip.org'
+source=("http://downloads.sourceforge.net/infozip/$pkgname$_pkgver.tar.gz")
+md5sums=("SKIP")
+depends=("bzip2")
+
+build() {
+	cd $pkgname$_pkgver
+	make -f unix/Makefile generic LOCAL_UNZIP="-DDECLARE_TIMEZONE"
+}
+
+package() {
+	cd $pkgname$_pkgver
+	make -f unix/Makefile prefix=${pkgdir} install
+}

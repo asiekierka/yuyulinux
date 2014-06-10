@@ -1,0 +1,51 @@
+pkgname=lua52
+pkgver=5.2.3
+pkgrel=1
+pkgdesc="Lua language interpreter"
+arch=('i686' 'x86_64')
+url="http://lua.org"
+license=("BSD")
+source=("http://www.lua.org/ftp/lua-$pkgver.tar.gz"
+        "liblua.so.patch")
+md5sums=('SKIP' 'SKIP')
+options=('strip' 'debug')
+
+prepare() {
+  cd "lua-$pkgver"
+  sed -i -e "s/#define LUA_USE_READLINE//g" -e "s/\/usr\/local\//\//g" src/luaconf.h
+  sed -i -e "s/-lreadline//g" -e "s/-lhistory//g" -e "s/-lncurses//g" \
+    -e 's@-DLUA_USE_LINUX@-DLUA_USE_LINUX -fPIC -O2 -pipe@g' src/Makefile
+  patch -p1 <../liblua.so.patch
+  for i in Makefile src/Makefile; do
+    sed -i -e "s/liblua\./liblua52\./g" $i
+  done
+}
+
+build() {
+  cd "lua-$pkgver"
+  make linux
+}
+
+package() {
+  cd "lua-$pkgver"
+  make INSTALL_TOP="$pkgdir" install
+
+  cp src/liblua52.so.$pkgver "$pkgdir"/lib
+  ln -s liblua52.so.$pkgver "$pkgdir"/lib/liblua52.so.5.2
+  ln -s liblua52.so.$pkgver "$pkgdir"/lib/liblua52.so
+  ln -s liblua52.so.$pkgver "$pkgdir"/lib/liblua.so.5.2
+  ln -s liblua52.so.$pkgver "$pkgdir"/lib/liblua.so.$pkgver
+
+  cd "$pkgdir"/include
+  mkdir lua52
+  mv *.h *.hpp lua52/
+
+  cd "$pkgdir"/bin
+  mv lua lua52
+  mv luac luac52
+
+  cd "$pkgdir"/share
+  mv ../man .
+  mv man/man1/lua.1 man/man1/lua52.1
+  mv man/man1/luac.1 man/man1/luac52.1
+}

@@ -1,0 +1,25 @@
+pkgname=libmad
+pkgver=0.15.1b
+pkgrel=1
+pkgdesc="MPEG Layer III decoding library"
+arch=('i686' 'x86_64')
+url="http://www.underbit.com/products/mad/"
+source=("ftp://ftp.mars.org/pub/mpeg/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  sed -i "s/-fforce-mem//g" configure
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --enable-accuracy
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

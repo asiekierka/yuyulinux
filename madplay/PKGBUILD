@@ -1,0 +1,22 @@
+pkgname=madplay
+pkgver=0.15.2b
+pkgrel=1
+pkgdesc="MP3 player"
+arch=('i686' 'x86_64')
+url="http://www.underbit.com/products/mad/"
+source=("ftp://ftp.mars.org/pub/mpeg/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+options=('strip')
+depends=("libid3tag" "libmad")
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --mandir=/share/man
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  rm -r "$pkgdir"/lib
+}

@@ -1,0 +1,59 @@
+pkgname=("libpcre" "libpcre++" "pcre")
+_pkgname=pcre
+pkgver=8.35
+pkgrel=1
+pkgdesc="perl compatible regex library"
+arch=('i686' 'x86_64')
+url="http://www.pcre.org"
+source=("ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/$_pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+build() {
+  cd "$_pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package_libpcre() {
+  cd "$_pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+
+  for i in pcregrep pcretest; do
+    rm "$pkgdir"/bin/$i
+    rm "$pkgdir"/share/doc/pcre/$i.txt
+    rm "$pkgdir"/share/man/man1/$i.1
+  done
+  rm "$pkgdir"/lib/libpcrecpp*
+  rm "$pkgdir"/lib/pkgconfig/libpcrecpp.pc
+  rm "$pkgdir"/include/pcrecpp*
+}
+
+package_libpcre++() {
+  cd "$_pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+
+  rm -r "$pkgdir"/bin "$pkgdir"/share
+  cd "$pkgdir"/include
+  rm pcre.h pcre_*.h pcreposix*
+  cd "$pkgdir"/lib
+  rm libpcre.* libpcreposix.* pkgconfig/libpcre.pc pkgconfig/libpcreposix.pc
+}
+
+package_pcre() {
+  options=('strip')
+  depends=("libpcre")
+  pkgdesc=("pcregrep and pcretest")
+  cd "$_pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  rm -r "$pkgdir"/include
+  rm -r "$pkgdir"/lib
+  rm -r "$pkgdir"/bin/pcre-config
+  rm -r "$pkgdir"/share/man/man1/pcre-config.1
+  rm -r "$pkgdir"/share/man/man3
+  cd "$pkgdir"/share
+  mv doc olddoc
+  mkdir -p doc/pcre
+  mv olddoc/pcre/pcregrep.txt olddoc/pcre/pcretest.txt doc/pcre/
+  rm -r olddoc
+}

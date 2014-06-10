@@ -1,0 +1,36 @@
+pkgname=("libsoldout" "soldout")
+pkbase="libsoldout"
+pkgver=1.3
+pkgrel=1
+pkgdesc="C library for markdown parsing"
+arch=('i686' 'x86_64')
+license=("BSD")
+url="http://http://fossil.instinctive.eu/libsoldout/home"
+source=("http://fossil.instinctive.eu/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  make
+}
+
+package_libsoldout() {
+  options=("strip" "debug")
+
+  cd "$pkgbase-$pkgver"
+  mkdir -p "$pkgdir"/lib
+  cp -pv libsoldout.so.1 "$pkgdir"/lib
+  ln -s "/lib/libsoldout.so.1" "$pkgdir"/lib/libsoldout.so
+}
+
+package_soldout() {
+  pkgdesc="C library for markdown parsing"
+  depends=("libsoldout")
+  options=("strip")
+
+  cd "$pkgbase-$pkgver"
+  mkdir -p "$pkgdir"/bin
+  cp -pv mkd2html "$pkgdir"/bin
+  cp -pv mkd2latex "$pkgdir"/bin
+  cp -pv mkd2man "$pkgdir"/bin
+}

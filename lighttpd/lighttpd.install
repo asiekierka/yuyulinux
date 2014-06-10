@@ -1,0 +1,6 @@
+post_install() {
+	addgroup www || true
+	adduser -D -G www -h /srv/www www || true
+	chown -R www:www /srv/www
+	chown -R www:www /var/log/lighttpd
+}

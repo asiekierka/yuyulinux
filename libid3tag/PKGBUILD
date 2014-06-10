@@ -1,0 +1,20 @@
+pkgname=libid3tag
+pkgver=0.15.1b
+pkgrel=1
+pkgdesc="ID3 tag management library"
+arch=('i686' 'x86_64')
+url="http://www.underbit.com/products/mad/"
+source=("ftp://ftp.mars.org/pub/mpeg/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --enable-accuracy
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

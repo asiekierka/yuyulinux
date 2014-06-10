@@ -7,7 +7,7 @@ url="http://git-scm.com"
 license=('GPL')
 source=("http://ftp.zut.edu.pl/mirrors/ftp.kernel.org/software/scm/$pkgname/$pkgname-$pkgver.tar.xz")
 md5sums=('SKIP')
-depends=("libcurl" "bash" "openssl")
+depends=("libcurl" "bash" "openssl" "libpcre")
 
 prepare() {
   cd "$pkgname-$pkgver"
@@ -16,7 +16,7 @@ prepare() {
 
 build() {
   cd "$pkgname-$pkgver"
-  ./configure --prefix=/ --with-openssl --without-libpcre --with-curl \
+  ./configure --prefix=/ --with-openssl --with-libpcre --with-curl \
     --without-expat --without-tcltk --with-perl=/bin/perl --with-python=/bin/python \
     --with-shell=/bin/bash --libexecdir=/lib
   sed -i "s/<sys\/poll\.h>/<poll\.h>/g" git-compat-util.h
