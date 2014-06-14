@@ -1,0 +1,21 @@
+--- busybox-1.22.1/editors/sed.c
++++ busybox-1.22.1-new/editors/sed.c
+@@ -72,8 +72,7 @@
+ //usage:#define sed_full_usage "\n\n"
+ //usage:       "	-e CMD	Add CMD to sed commands to be executed"
+ //usage:     "\n	-f FILE	Add FILE contents to sed commands to be executed"
+-//usage:     "\n	-i[SFX]	Edit files in-place (otherwise sends to stdout)"
+-//usage:     "\n		Optionally back files up, appending SFX"
++//usage:     "\n	-i	Edit files in-place (otherwise sends to stdout)"
+ //usage:     "\n	-n	Suppress automatic printing of pattern space"
+ //usage:     "\n	-r,-E	Use extended regex syntax"
+ //usage:     "\n"
+@@ -1454,7 +1453,7 @@
+ 	 * GNU sed 4.2.1 mentions it in neither --help
+ 	 * nor manpage, but does recognize it.
+ 	 */
+-	opt = getopt32(argv, "i::rEne:f:", &opt_i, &opt_e, &opt_f,
++	opt = getopt32(argv, "irEne:f:", &opt_e, &opt_f,
+ 			    &G.be_quiet); /* counter for -n */
+ 	//argc -= optind;
+ 	argv += optind;

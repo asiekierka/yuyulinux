@@ -1,0 +1,18 @@
+--- Makefile.old	2014-06-10 12:26:15.929660691 +0000
++++ Makefile	2014-06-10 12:25:57.969757988 +0000
+@@ -1,12 +1,12 @@
+ all:
+ 	cd libXau; make
+-	cd libtinyX11; make
+ 	cd libICE; make
+ 	cd libSM; make
+-	cd libXmu; make
++	cd libXext; make
++	cd libtinyX11; make
+ 	cd libXt; make
++	cd libXmu; make
+ 	cd libXv; make
+-	cd libXext; make
+ 	cd libXinerama; make
+ 	cd libXrender; make
+ 	cd libXpm; make

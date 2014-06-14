@@ -1,0 +1,11 @@
+--- busybox-old/miscutils/man.c
++++ busybox/miscutils/man.c
+@@ -106,7 +106,7 @@
+ 	/* "2>&1" is added so that nroff errors are shown in pager too.
+ 	 * Otherwise it may show just empty screen */
+ 	cmd = xasprintf(
+-		man ? "nroff -Tutf -man 2>&1 | %s"
++		man ? "mandoc -Tutf8 2>&1 | %s"
+ 		    : "%s",
+ 		pager);
+ 	system(cmd);

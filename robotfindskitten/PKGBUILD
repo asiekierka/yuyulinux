@@ -3,7 +3,6 @@ pkgver=2.7182818.701
 pkgrel=1
 pkgdesc="zen simulation game"
 arch=('i686' 'x86_64')
-groups=("base")
 url="http://robotfindskitten.org"
 source=("http://downloads.sourceforge.net/project/rfk/robotfindskitten-POSIX/mayan_apocalypse_edition/$pkgname-$pkgver.tar.gz")
 md5sums=('SKIP')

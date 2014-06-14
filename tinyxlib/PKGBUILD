@@ -1,0 +1,37 @@
+pkgname=("tinyxlib")
+pkgver=0.0.1
+pkgrel=1
+pkgdesc="tiny X libraries implementation"
+arch=('i686' 'x86_64')
+url="https://github.com/idunham/tinyxlib"
+source=("http://yuyu.asie.pl/tinyxlib-fee6aac.tar.xz"
+        "tinyxlib-add-cms.diff"
+	"tinyxlib-fix-makefile.diff")
+md5sums=('SKIP' 'SKIP' 'SKIP')
+options=('strip' 'debug')
+
+prepare() {
+  cd "$pkgname"
+
+  # Revert Cms changes, as they seem to break building for now.
+  patch -p1 -R <../tinyxlib-add-cms.diff
+
+  patch -p0 <../tinyxlib-fix-makefile.diff
+
+  # Patch definitions
+  sed -i -e "s@/usr/@/@g" -e "s@-pipe -Os -mtune=i386@-O2 -pipe -fPIC@g" standard_definitions.mk
+  sed -i "s@/usr@/@g" standard_definitions.mk
+}
+
+build() {
+  cd "$pkgname"
+  make
+}
+
+package() {
+  cd "$pkgname"
+  mkdir -p "$pkgdir"/share/X11
+  mkdir -p "$pkgdir"/lib/pkgconfig
+  mkdir -p "$pkgdir"/include
+  make DESTDIR=$pkgdir install
+}

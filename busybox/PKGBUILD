@@ -10,22 +10,30 @@ makedepends=("linux-libre-headers")
 backup=("etc/mdev.conf" "etc/udhcpc.rc")
 source=("http://busybox.net/downloads/$pkgname-$pkgver.tar.bz2"
 	"busybox.config"
+	"busybox-man-mandoc.patch"
 	"busybox-musl-fixes.patch"
-        "busybox-revert-sed.patch"
+        "busybox-sed.patch"
 	"gettext"
         "mdev.conf")
 
 # Gettext is technically not part of busybox, but it fits its spirit so I keep it here.
 
-md5sums=('SKIP' 'SKIP' "SKIP" "SKIP" "SKIP" 'SKIP')
+md5sums=('SKIP' 'SKIP' "SKIP" "SKIP" "SKIP" "SKIP" 'SKIP')
 
 prepare() {
   cd "$pkgname-$pkgver"
-  # Different function names and/or includes
+
+  # Fix musl compatibility.
   patch -p1 < ../busybox-musl-fixes.patch
 
-  # Regression: sed in busybox 1.22.1 is utterly broken, falling back to sed in busybox 1.20.2
-  patch -p1 < ../busybox-revert-sed.patch
+  # Fix sed using GNU getopt extensions (removes -iSFX, though, so not a perfect solution)
+  patch -p1 < ../busybox-sed.patch
+
+  # Make busybox's man use mandoc in place of nroff
+  patch -p1 < ../busybox-man-mandoc.patch
+
+  # Change the defualt man directory
+  sed -i "s/\/usr\/man/\/share\/man/g" miscutils/man.c
 }
 
 build() {

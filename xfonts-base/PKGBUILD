@@ -1,0 +1,14 @@
+pkgname=xfonts-fixed
+pkgver=1.0
+pkgrel=1
+pkgdesc="Unicode fixed font for X.Org"
+arch=('i686' 'x86_64')
+url="http://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html"
+source=("http://yuyu.asie.pl/ucs-fonts-pcf.tar.xz")
+md5sums=('SKIP')
+
+package() {
+  cd ucs-fonts
+  mkdir -p "$pkgdir"/share/fonts/X11/misc
+  cp -Rv * "$pkgdir"/share/fonts/X11/misc
+}

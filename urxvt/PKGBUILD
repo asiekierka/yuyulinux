@@ -1,0 +1,24 @@
+pkgname=urxvt
+pkgver=9.20
+pkgrel=1
+pkgdesc="rxvt-unicode X terminal emulator"
+arch=('i686' 'x86_64')
+url="http://software.schmorp.de/pkg/rxvt-unicode.html"
+source=("http://dist.schmorp.de/rxvt-unicode/Attic/rxvt-unicode-$pkgver.tar.bz2")
+md5sums=("SKIP")
+
+build() {
+  cd "rxvt-unicode-$pkgver"
+  CXXFLAGS="$CXXFLAGS -DRepeatNone=0 -DRepeatNormal=1 -DRepeatPad=2 -DRepeatReflect=3" \
+    ./configure --prefix=/ --disable-utmp --disable-wtmp --disable-lastlog --enable-256-color \
+    --disable-xft --disable-pixbuf --enable-font-styles --enable-rxvt-scroll --disable-perl
+
+  sed -i "s/XRENDER 1/XRENDER 0/" config.h
+
+  make
+}
+
+package() {
+  cd "rxvt-unicode-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

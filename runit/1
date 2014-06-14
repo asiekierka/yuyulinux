@@ -12,6 +12,7 @@ echo /bin/mdev > /proc/sys/kernel/hotplug
 hostname $(cat /etc/hostname)
 cat /proc/mounts > /etc/mtab
 
+mdev -s
 ifconfig lo up
 
 touch /etc/runit/stopit

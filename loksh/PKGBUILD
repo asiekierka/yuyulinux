@@ -1,0 +1,21 @@
+pkgname=loksh
+pkgver=5.5
+pkgrel=1
+pkgdesc="port of OpenBSD ksh"
+arch=('i686' 'x86_64')
+url="https://github.com/iguleder/loksh"
+license=('BSD')
+source=("http://yuyu.asie.pl/$pkgname-$pkgver.tar.xz")
+md5sums=('SKIP')
+install=loksh.install
+
+build() {
+  cd "$pkgname"
+  make
+}
+
+package() {
+  cd "$pkgname"
+  make DESTDIR="$pkgdir" PREFIX="/" install
+  mv "$pkgdir"/bin/ksh "$pkgdir"/bin/loksh
+}

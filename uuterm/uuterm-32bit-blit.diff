@@ -1,0 +1,43 @@
+--- uuterm/dblbuf.c
++++ uuterm-new/dblbuf.c
+@@ -49,6 +49,31 @@
+ 	}
+ }
+ 
++static void blitline32(unsigned char *dest, unsigned char *src, unsigned long *colors, int w)
++{
++        static const union {
++		unsigned char b[8];
++		uint64_t w;
++	} tab[4] = {
++		{ { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff } },
++		{ { 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00 } },
++		{ { 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff } },
++		{ { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } }
++        };
++	uint64_t *dest8 = (uint64_t*)dest;
++	for(; w--; dest8+=4, colors+=2) {
++		int s = *src++;
++		uint64_t t0 = tab[s>>6].w;
++		uint64_t t1 = tab[(s>>4)&3].w;
++		uint64_t t2 = tab[(s>>2)&3].w;
++		uint64_t t3 = tab[s&3].w;
++		dest8[0] = colors[0] ^ (colors[1] & t0);
++		dest8[1] = colors[0] ^ (colors[1] & t1);
++		dest8[2] = colors[0] ^ (colors[1] & t2);
++		dest8[3] = colors[0] ^ (colors[1] & t3);
++	}
++}
++
+ static void blit_slice(struct uudisp *d, int idx, int x1, int x2)
+ {
+ 	struct dblbuf *b = (void *)&d->priv;
+@@ -68,6 +93,8 @@
+ 			blitline8(dest, src, colors, w);
+ 		else if (b->bytes_per_pixel == 2)
+ 			blitline16(dest, src, colors, w);
++		else if (b->bytes_per_pixel == 4)
++			blitline32(dest, src, colors, w);
+ 		dest += b->line_stride;
+ 		src += s;
+ 	}

@@ -1,0 +1,7 @@
+post_install() {
+	add-shell /bin/loksh
+}
+
+pre_remove() {
+	remove-shell /bin/loksh
+}

@@ -1,0 +1,7 @@
+post_install() {
+	add-shell /bin/bash
+}
+
+pre_remove() {
+	remove-shell /bin/bash
+}

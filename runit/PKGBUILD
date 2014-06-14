@@ -10,6 +10,7 @@ url="http://smarden.org/runit"
 license=('GPL')
 source=("http://smarden.org/$pkgname/$pkgname-$pkgver.tar.gz" "1" "2" "3" "svmgr")
 md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+depends=("busybox")
 
 prepare() {
   cd admin/"$pkgname-$pkgver"/src

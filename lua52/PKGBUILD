@@ -7,6 +7,7 @@ url="http://lua.org"
 license=("BSD")
 source=("http://www.lua.org/ftp/lua-$pkgver.tar.gz"
         "liblua.so.patch")
+provides=("lua")
 md5sums=('SKIP' 'SKIP')
 options=('strip' 'debug')
 
@@ -33,6 +34,7 @@ package() {
   cp src/liblua52.so.$pkgver "$pkgdir"/lib
   ln -s liblua52.so.$pkgver "$pkgdir"/lib/liblua52.so.5.2
   ln -s liblua52.so.$pkgver "$pkgdir"/lib/liblua52.so
+  ln -s liblua52.so.$pkgver "$pkgdir"/lib/liblua.so
   ln -s liblua52.so.$pkgver "$pkgdir"/lib/liblua.so.5.2
   ln -s liblua52.so.$pkgver "$pkgdir"/lib/liblua.so.$pkgver
 
@@ -43,9 +45,13 @@ package() {
   cd "$pkgdir"/bin
   mv lua lua52
   mv luac luac52
+  ln -s "/bin/lua52" lua
+  ln -s "/bin/luac52" luac
 
   cd "$pkgdir"/share
   mv ../man .
   mv man/man1/lua.1 man/man1/lua52.1
   mv man/man1/luac.1 man/man1/luac52.1
+  ln -s "/share/man/man1/lua52.1" lua.1
+  ln -s "/share/man/man1/luac52.1" luac.1
 }

@@ -1,0 +1,7 @@
+post_install() {
+	add-shell /bin/mksh
+}
+
+pre_remove() {
+	remove-shell /bin/mksh
+}

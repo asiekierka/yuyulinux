@@ -1,0 +1,37 @@
+# big thanks to sabotage for the unbloat code & / patches
+
+pkgname=python2
+pkgver=2.7.7
+pkgrel=1
+pkgdesc="Python language interpreter"
+arch=('i686' 'x86_64')
+url="http://python.org"
+source=("https://www.python.org/ftp/$pkgname/$pkgver/Python-$pkgver.tar.xz"
+        "python273-pathsearch.patch")
+md5sums=('SKIP' 'SKIP')
+depends=("ncurses" "openssl" "bzip2")
+provides=("python")
+
+prepare() {
+  cd "Python-$pkgver"
+  patch -p1 <../python273-pathsearch.patch
+}
+
+build() {
+  cd "Python-$pkgver"
+  CFLAGS="-D_GNU_SOURCE -D_BSD_SOURCE -fPIC $CFLAGS" \
+    ./configure -C --prefix=""
+  make
+}
+
+package() {
+  cd "Python-$pkgver"
+  make DESTDIR="$pkgdir" install
+
+  ln -sf ../../libpython2.7.a "$pkgdir"/lib/python2.7/config/libpython2.7.a
+
+  for test in sqlite3/test email/test ctypes/test test unittest/test lib-tk/test \
+            bsddb/test json/tests lib2to3/tests distutils/tests tests ; do
+    rm -rf "$pkgdir"/lib/python2.7/"$test"
+  done
+}

@@ -1,0 +1,27 @@
+pkgname=mandoc
+pkgver=1.12.3
+pkgrel=1
+pkgdesc="lightweight man/mandoc parser"
+arch=('i686' 'x86_64')
+url="http://mdocml.bsd.lv/"
+license=('BSD')
+groups=("base")
+source=("http://mdocml.bsd.lv/snapshots/mdocml-$pkgver.tar.gz")
+md5sums=('SKIP')
+
+prepare() {
+  cd "mdocml-$pkgver"
+  sed -i -e "s/#STATIC/STATIC/" -e "s/apropos mandocdb man.cgi catman whatis//" \
+    -e "s/ preconv / /" -e "s/\/usr\/local/\//g" -e "s/\/lib\/mandoc/\/lib/" Makefile
+}
+
+build() {
+  cd "mdocml-$pkgver"
+  make
+}
+
+package() {
+  cd "mdocml-$pkgver"
+  make DESTDIR="$pkgdir" MANDIR="/share/man" install
+  rm "$pkgdir"/share/man/man1/preconv.1
+}

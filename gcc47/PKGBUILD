@@ -1,5 +1,5 @@
 pkgname=("gcc47" "libstdc++")
-pkgver=4.7.3
+pkgver=4.7.4
 pkgrel=1
 pkgdesc="GNU C Compiler"
 arch=('i686' 'x86_64')

@@ -3,7 +3,6 @@ pkgver=3.14.5
 pkgrel=1
 pkgdesc="fully free Linux kernel"
 arch=('i686' 'x86_64')
-groups=("base")
 url="http://linux-libre.fsfla.org/"
 license=('GPL')
 source=("http://linux-libre.fsfla.org/pub/linux-libre/releases/$pkgver-gnu/linux-libre-$pkgver-gnu.tar.xz"
@@ -39,6 +38,9 @@ build() {
 }
 
 package_linux-libre() {
+  groups=("base")
+  optdepends=("linux-libre-firmware")
+
   cd "linux-$pkgver"
 
   make INSTALL_MOD_PATH="$pkgdir" modules_install

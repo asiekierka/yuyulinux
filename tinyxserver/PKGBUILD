@@ -1,0 +1,33 @@
+pkgname=("tinyxserver")
+pkgver=0.0.1
+pkgrel=1
+pkgdesc="tiny X server"
+arch=('i686' 'x86_64')
+provides=("xfbdev")
+url="https://github.com/idunham/tinyxserver"
+source=("http://yuyu.asie.pl/tinyxserver-b010434.tar.xz")
+md5sums=('SKIP')
+options=('strip')
+
+prepare() {
+  cd "$pkgname"
+
+  # Patch definitions
+  sed -i -e "s@/usr/@/@g" -e "s@-pipe -Os -mtune=i386@-O2 -pipe -fPIC@g" \
+    -e "s@DESTIR@DESTDIR@g" standard_definitions.mk
+  sed -i "s@/usr@/@g" standard_definitions.mk
+}
+
+build() {
+  cd "$pkgname"
+  make
+  make xinit
+}
+
+package() {
+  cd "$pkgname"
+  mkdir -p "$pkgdir"/share/doc
+  mkdir -p "$pkgdir"/share/man/man1
+  mkdir -p "$pkgdir"/bin
+  make DESTDIR=$pkgdir BINDIR=/bin DOCDIR=/share/doc MANDIR=/share/man/man1 install
+}

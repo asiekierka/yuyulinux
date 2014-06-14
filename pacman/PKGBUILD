@@ -1,4 +1,4 @@
-pkgname=pacman
+pkgname="pacman"
 pkgver=4.1.2
 pkgrel=1
 pkgdesc="A library-based package manager with dependency support"
@@ -6,15 +6,17 @@ arch=('i686' 'x86_64')
 url="http://www.archlinux.org/pacman/"
 license=('GPL')
 groups=('base')
-depends=('bash>=4.3' 'libarchive>=3.1.2' 'gnupg' 'openssl')
+depends=('bash' 'gnupg' 'openssl' 'libarchive>=3.1.2')
 checkdepends=('python2' 'fakechroot')
+options=('strip')
 optdepends=('fakeroot: for makepkg usage as normal user')
-backup=(etc/pacman.conf etc/makepkg.conf)
-options=('strip' 'debug')
+backup=("etc/makepkg.conf" "etc/pacman.conf")
+
 source=(ftp://ftp.archlinux.org/other/pacman/$pkgname-$pkgver.tar.gz{,.sig}
         pacman-4.1.2-musl.diff
         makepkg.conf
 	pacman.conf)
+
 md5sums=('063c8b0ff6bdf903dc235445525627cd'
          'SKIP'
          'SKIP'
@@ -32,10 +34,8 @@ prepare() {
 
 build() {
   cd "$pkgname-$pkgver"
-  LIBTOOL="false" ./configure --prefix=/ --sysconfdir=/etc \
-    --localstatedir=/var --enable-doc \
-    --with-scriptlet-shell=/bin/bash \
-    --with-ldconfig=/bin/ldconfig
+  LIBTOOL="false" ./configure --prefix=/ --sysconfdir=/etc --localstatedir=/var --enable-doc \
+    --with-scriptlet-shell=/bin/bash --with-ldconfig=/bin/ldconfig --without-openssl --disable-nls
   make
   make -C contrib
 }
@@ -46,12 +46,9 @@ check() {
 
 package() {
   cd "$pkgname-$pkgver"
-
   make DESTDIR="$pkgdir" install
   make DESTDIR="$pkgdir" -C contrib install
-
   cp ../makepkg.conf "$pkgdir"/etc/makepkg.conf
   cp ../pacman.conf "$pkgdir"/etc/pacman.conf
-
   sed -i "s/\/usr\/bin/\/bin/g" "$pkgdir"/bin/makepkg
 }
