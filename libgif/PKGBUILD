@@ -1,0 +1,24 @@
+pkgname=("libgif")
+pkgver=5.1.0
+pkgrel=1
+pkgdesc="GIF library"
+arch=('i686' 'x86_64')
+url="http://giflib.sourceforge.net"
+source=("http://downloads.sourceforge.net/giflib/giflib-$pkgver.tar.bz2")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+prepare() {
+  cd "giflib-$pkgver"
+}
+
+build() {
+  cd "giflib-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "giflib-$pkgver"
+  make DESTDIR=$pkgdir install
+}

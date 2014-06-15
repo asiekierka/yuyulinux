@@ -1,0 +1,24 @@
+pkgname=("libpng")
+pkgver=1.6.12
+pkgrel=1
+pkgdesc="PNG library"
+arch=('i686' 'x86_64')
+url="http://libpng.org"
+source=("http://download.sourceforge.net/$pkgname/$pkgname-$pkgver.tar.xz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR=$pkgdir install
+}

@@ -1,15 +1,16 @@
 pkgname=elinks
-pkgver=0.11.7
+pkgmver=0.13
+pkgver=20140615
 pkgrel=1
 pkgdesc="text-mode web browser"
 arch=('i686' 'x86_64')
 url="http://elinks.or.cz"
-source=("http://elinks.or.cz/download/$pkgname-$pkgver.tar.bz2")
-md5sums=('SKIP')
+source=("http://yuyu.asie.pl/$pkgname-$pkgver.tar.bz2" "elinks.conf")
+md5sums=('SKIP' 'SKIP')
 depends=("zlib" "openssl")
 
 build() {
-  cd "$pkgname-$pkgver"
+  cd "$pkgname-$pkgmver-$pkgver"
   ./configure --prefix=/ --without-gpm --with-zlib --without-bzlib --with-idn \
     --without-spidermonkey --without-guile --without-perl --without-python \
     --without-lua --without-ruby --with-openssl --without-x \
@@ -19,6 +20,8 @@ build() {
 }
 
 package() {
-  cd "$pkgname-$pkgver"
+  cd "$pkgname-$pkgmver-$pkgver"
   make DESTDIR="$pkgdir" install
+  mkdir -p "$pkgdir"/etc/elinks
+  install -c -m 0644 -o root ../elinks.conf "$pkgdir"/etc/elinks/elinks.conf
 }

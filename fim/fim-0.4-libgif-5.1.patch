@@ -1,0 +1,32 @@
+--- fim-old/src/FbiStuffGif.cpp
++++ fim-new/src/FbiStuffGif.cpp
+@@ -60,9 +60,9 @@
+ FimPrintGifError(struct gif_state * gs) {
+     int ErrorCode = gs->gif->Error;
+     /* On the basis of giflib-5.0.5/util/qprintf.c suggestion, after retirement of PrintGifError  */
+-    char *Err = NULL;
++    const char *Err = NULL;
+ 
+-    if(ErrorCode == 0)   
++    if(ErrorCode == 0)
+ 	    return;
+ 
+     Err = GifErrorString(ErrorCode);
+@@ -232,7 +232,7 @@
+ 	FIM_FBI_PRINTF("gif: fatal error, aborting\n");
+     if(h->gif);
+     {
+-    	DGifCloseFile(h->gif);
++    	DGifCloseFile(h->gif, 0);
+         fim_free(h->gif);
+     }
+     fclose(h->infile);
+@@ -275,7 +275,7 @@
+ 
+     if (FbiStuff::fim_filereading_debug())
+ 	FIM_FBI_PRINTF("gif: done, cleaning up\n");
+-    DGifCloseFile(h->gif);
++    DGifCloseFile(h->gif, 0);
+     fclose(h->infile);
+     if (h->il)
+ 	fim_free(h->il);
