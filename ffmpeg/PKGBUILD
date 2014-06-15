@@ -1,0 +1,27 @@
+pkgname=("ffmpeg")
+pkgver=2.2.3
+pkgrel=1
+pkgdesc="video library"
+arch=('i686' 'x86_64')
+source=("http://www.ffmpeg.org/releases/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+options=('strip' 'debug')
+depends=("bzip2" "zlib" "libvorbis" "openssl")
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  sed -i -e "s/pr -n -t/echo/g" \
+    -e "s/| pr -r -3 -t//g" configure
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --enable-libvorbis --enable-openssl \
+    --disable-indev=oss --disable-outdev=oss
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR=$pkgdir install
+}

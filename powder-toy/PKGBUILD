@@ -1,0 +1,30 @@
+pkgname=powder-toy
+pkgver=89.2.283
+pkgrel=1
+pkgdesc="powder expeirmentation game"
+arch=('i686' 'x86_64')
+source=("http://yuyu.asie.pl/$pkgname-$pkgver.tar.xz")
+md5sums=('SKIP')
+depends=("lua51" "libfftw" "libsdl" "bzip2" "zlib")
+makedepends=("scons")
+
+prepare() {
+  cd "$pkgname-$pkgver"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  archparam=
+  if [ $CARCH == x86_64 ]; then
+    archparam=--64bit
+  fi
+  CFLAGS="-I/include/lua51" CXX="g++ -I/include/lua51" \
+    scons --lin --copy-env $archparam
+  mv build/powder* build/binary
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  mkdir -p "$pkgdir"/bin
+  install -c -o root -m 755 build/binary $pkgdir/bin/powder-toy
+}
