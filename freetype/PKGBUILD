@@ -1,0 +1,25 @@
+pkgname=("freetype")
+pkgver=2.5.3
+pkgrel=1
+pkgdesc="font library"
+url="http://www.freetype.org"
+arch=('i686' 'x86_64')
+source=("http://download.savannah.gnu.org/releases/$pkgname/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --with-zlib --with-bzip2 --without-png \
+    --without-old-mac-fonts
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR=$pkgdir install
+}

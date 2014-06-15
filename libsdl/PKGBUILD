@@ -1,0 +1,30 @@
+pkgname=libsdl
+pkgver=1.2.15
+pkgrel=1
+pkgdesc="Simple DirectMedia Library"
+arch=('i686' 'x86_64')
+url="http://libsdl.org/"
+options=('strip' 'debug' 'libtool')
+source=("http://www.libsdl.org/release/SDL-$pkgver.tar.gz")
+md5sums=("SKIP")
+depends=()
+makedepends=("alsa-lib")
+
+prepare() {
+  cd "SDL-$pkgver"
+}
+
+build() {
+  cd "SDL-$pkgver"
+  LDFLAGS="$LDFLAGS -lX11" ./configure --prefix=/ --disable-oss \
+    --disable-esd --disable-pulseaudio --disable-arts --disable-nas \
+    --disable-sndio --disable-video-wayland --disable-video-mir \
+    --disable-video-directfb --disable-fusionsound --disable-libudev \
+    --disable-dbus --with-x
+  make
+}
+
+package() {
+  cd "SDL-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

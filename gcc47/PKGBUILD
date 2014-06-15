@@ -51,7 +51,7 @@ build() {
       --disable-multilib --disable-nls --disable-mudflap --disable-libmudflap \
       --disable-libssp --disable-libgomp --disable-debug --disable-bootstrap \
       --enable-lto --with-system-zlib --with-target-libiberty=no --with-target-zlib=no \
-      --enable-languages=c,c++ --enable-clocale=generic --build=$CARCH-unknown-linux-musl \
+      --enable-languages=c,c++ --enable-clocale=generic \
       --libdir=/lib --libexecdir=/lib --mandir=/share/man --infodir=/share/info --oldincludedir=/include
 
   make
@@ -62,6 +62,8 @@ package_gcc47() {
   cd "gcc-$pkgver"
   make DESTDIR="${pkgdir}" install-gcc install-lto-plugin install-target-libgcc
   ln -sf gcc "${pkgdir}"/bin/cc
+
+  rm $pkgdir/lib/gcc/*/$pkgver/include/stddef.h
 }
 
 package_libstdc++() {

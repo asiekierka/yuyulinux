@@ -1,0 +1,23 @@
+--- tinyxlib/include/X11/Xos.h
++++ tinyxlib-musl/include/X11/Xos.h
+@@ -265,20 +265,5 @@
+ #include <sys/limits.h>
+ #define NGROUPS 16
+ #endif
+-
+-#if defined(ISC) || \
+-    (defined(linux) && !defined(__GLIBC__)) || \
+-    (defined(__QNX__) && !defined(UNIXCONN))
+-/*
+- *	Some OS's may not have this
+- */
+-
+-#define X_NO_SYS_UN 1
+-
+-struct sockaddr_un {
+-	short	sun_family;
+-	char	sun_path[108];
+-};
+-#endif
+ 
+ #include "Xarch.h"

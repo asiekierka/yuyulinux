@@ -1,0 +1,24 @@
+pkgname=scrot
+pkgver=0.8
+pkgrel=1
+pkgdesc="x screenshot tool"
+arch=('i686' 'x86_64')
+url="http://linuxbrit.co.uk"
+source=("http://linuxbrit.co.uk/downloads/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+depends=("tinyxlib" "giblib")
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --mandir=/share/man
+  for i in Makefile src/Makefile; do
+    sed -i "s/@my_libs@//g" $i;
+  done
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  mv "$pkgdir"/doc "$pkgdir"/share/doc 
+}

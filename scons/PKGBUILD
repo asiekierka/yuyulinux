@@ -1,0 +1,30 @@
+pkgname=scons
+pkgver=2.3.1
+pkgrel=1
+pkgdesc="a software construction tool"
+arch=('i686' 'x86_64')
+groups=("base")
+url="http://www.scons.org"
+license=('GPL')
+source=("http://prdownloads.sourceforge.net/scons/$pkgname-$pkgver.tar.gz")
+depends=("python2")
+md5sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  python setup.py install --prefix=$pkgdir
+
+  # man is corrupt, for some reason
+  rm -rf "$pkgdir"/man
+  # fix filenames
+  cd "$pkgdir"/bin
+  for i in scons scons-time sconsign; do
+    rm "$i"-$pkgver
+    ln -s /bin/"$i" "$i"-$pkgver
+    sed -i "s@#! /usr/bin/env python@#!/bin/python2@g" "$i"
+  done
+}

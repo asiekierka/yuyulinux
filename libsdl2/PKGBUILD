@@ -1,0 +1,33 @@
+pkgname=libsdl2
+pkgver=2.0.3
+pkgrel=1
+pkgdesc="Simple DirectMedia Library"
+arch=('i686' 'x86_64')
+url="http://libsdl.org/"
+options=('strip' 'debug' 'libtool')
+source=("http://www.libsdl.org/releases/release/SDL2-$pkgver.tar.gz"
+        "sdl2-tinyxlib.patch")
+md5sums=("SKIP" "SKIP")
+depends=()
+makedepends=("alsa-lib")
+
+prepare() {
+  cd "SDL2-$pkgver"
+  patch -p1 <../sdl2-tinyxlib.patch
+}
+
+build() {
+  cd "SDL2-$pkgver"
+  LDFLAGS="$LDFLAGS -lX11" ./configure --prefix=/ --disable-oss \
+    --disable-esd --disable-pulseaudio --disable-arts --disable-nas \
+    --disable-sndio --disable-video-wayland --disable-video-mir \
+    --disable-video-directfb --disable-fusionsound --disable-libudev \
+    --disable-dbus --with-x
+  make
+}
+
+package() {
+  cd "SDL2-$pkgver"
+  make DESTDIR="$pkgdir" install
+  rm "$pkgdir"/lib/libSDL2_test.a
+}

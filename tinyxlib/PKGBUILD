@@ -7,7 +7,7 @@ url="https://github.com/idunham/tinyxlib"
 source=("http://yuyu.asie.pl/tinyxlib-fee6aac.tar.xz"
         "Xcms.h"
 	"tinyxlib-fix-makefile.diff"
-        "tinyxlib-64bit.diff")
+        "tinyxlib-musl.patch")
 md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
 options=('strip' 'debug')
 
@@ -15,7 +15,7 @@ prepare() {
   cd "$pkgname"
 
   patch -p0 <../tinyxlib-fix-makefile.diff
-  patch -p1 <../tinyxlib-64bit.diff
+  patch -p1 <../tinyxlib-musl.patch
 
   # Patch definitions
   sed -i -e "s@/usr/@/@g" -e "s@-pipe -Os -mtune=i386@-O2 -pipe -fPIC@g" standard_definitions.mk

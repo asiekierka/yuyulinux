@@ -1,0 +1,37 @@
+pkgname=("libfftw" "fftw-wisdom")
+pkgver=3.3.4
+pkgrel=1
+pkgdesc="fourier transform library"
+arch=('i686' 'x86_64')
+url="http://fftw.org"
+source=("http://www.fftw.org/fftw-$pkgver.tar.gz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+prepare() {
+  cd "fftw-$pkgver"
+}
+
+build() {
+  cd "fftw-$pkgver"
+  CFLAGS="$CFLAGS -fPIC" ./configure --prefix=/ --enable-shared --enable-float
+  make
+}
+
+package_libfftw() {
+  cd "fftw-$pkgver"
+  make DESTDIR="$pkgdir" install
+  rm -rf "$pkgdir"/bin
+  rm -rf "$pkgdir"/share/man/man1
+}
+
+package_fftw-wisdom() {
+  options=('strip')
+  depends=("libfftw")
+
+  cd "fftw-$pkgver"
+  make DESTDIR="$pkgdir" install
+  rm -rf "$pkgdir"/include
+  rm -rf "$pkgdir"/lib
+  rm -rf "$pkgdir"/share/info
+}

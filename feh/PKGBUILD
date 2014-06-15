@@ -1,0 +1,22 @@
+pkgname=feh
+pkgver=2.12
+pkgrel=1
+pkgdesc="feh x image viewer"
+arch=('i686' 'x86_64')
+url="http://derf.homelinux.org/projects/feh/"
+source=("http://feh.finalrewind.org/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+depends=("tinyxlib" "imlib2")
+
+build() {
+  cd "$pkgname-$pkgver"
+  # configure
+  sed -i -e "s@/usr/local@/@g" -e "s@/usr@/@g" -e "s@curl ?= 1@curl ?= 0@g" config.mk
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  rm -rf "$pkgdir"/share/applications
+}
