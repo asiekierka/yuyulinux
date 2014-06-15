@@ -1,4 +1,5 @@
-pkgname=uuterm
+pkgname=("uuterm" "xuuterm")
+pkgbase="uuterm"
 pkgver=1
 pkgrel=1
 pkgdesc="lightweight framebuffer terminal"
@@ -10,26 +11,34 @@ source=("http://yuyu.asie.pl/uuterm-2008-02-10.tar.xz"
         "uuterm-palette-defpaths.diff"
         "palette")
 md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
-makedepends=("ncurses")
+makedepends=("ncurses" "tinyxlib")
 
 prepare() {
-  cd "$pkgname"
+  cd "$pkgbase"
   patch -p1 < ../uuterm-32bit-blit.diff
   patch -p1 < ../uuterm-palette-defpaths.diff
 }
 
 build() {
-  cd "$pkgname"
-  make uuterm-fb ucfcomp ytty/ytty.ucf
+  cd "$pkgbase"
+  make uuterm-fb uuterm-x11 ucfcomp ytty/ytty.ucf
 }
 
-package() {
-  cd "$pkgname"
+package_xuuterm() {
+  depends=("tinyxlib" "uuterm")
+  pkgdesc="lightweight X11 terminal"
+  cd "$pkgbase"
+  mkdir -p "$pkgdir"/bin
+  install -c -o root -m 0755 uuterm-x11 "$pkgdir"/bin/xuuterm
+}
+
+package_uuterm() {
+  cd "$pkgbase"
   mkdir -p "$pkgdir"/bin
   mkdir -p "$pkgdir"/share/fonts/ucf
   mkdir -p "$pkgdir"/share/uuterm
   mkdir -p "$pkgdir"/share/terminfo/u
-  install -c -o root -m 0755 uuterm-fb "$pkgdir"/bin/uuterm-fb
+  install -c -o root -m 0755 uuterm-fb "$pkgdir"/bin/uuterm
   install -c -o root -m 0755 ucfcomp "$pkgdir"/bin/ucfcomp
   install -c -o root -m 0644 ytty/ytty.ucf "$pkgdir"/share/fonts/ucf/ytty.ucf
   install -c -o root -m 0644 ../palette "$pkgdir"/share/uuterm/palette

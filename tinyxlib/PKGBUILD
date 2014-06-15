@@ -5,26 +5,36 @@ pkgdesc="tiny X libraries implementation"
 arch=('i686' 'x86_64')
 url="https://github.com/idunham/tinyxlib"
 source=("http://yuyu.asie.pl/tinyxlib-fee6aac.tar.xz"
-        "tinyxlib-add-cms.diff"
-	"tinyxlib-fix-makefile.diff")
-md5sums=('SKIP' 'SKIP' 'SKIP')
+        "Xcms.h"
+	"tinyxlib-fix-makefile.diff"
+        "tinyxlib-64bit.diff")
+md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
 options=('strip' 'debug')
 
 prepare() {
   cd "$pkgname"
 
-  # Revert Cms changes, as they seem to break building for now.
-  patch -p1 -R <../tinyxlib-add-cms.diff
-
   patch -p0 <../tinyxlib-fix-makefile.diff
+  patch -p1 <../tinyxlib-64bit.diff
 
   # Patch definitions
   sed -i -e "s@/usr/@/@g" -e "s@-pipe -Os -mtune=i386@-O2 -pipe -fPIC@g" standard_definitions.mk
-  sed -i "s@/usr@/@g" standard_definitions.mk
+
+  # Fix CMS build
+  cp ../Xcms.h include/X11/
+
+  # Patch paths
+  for i in standard_definitions.mk libXt/IntrinsicI.h libXt/Makefile libXmu/Makefile libtinyX11/Makefile \
+    libtinyX11/StrKeysym.c libtinyX11/ErrDes.c libtinyX11/cmsColNm.c libXcursor/library.c \
+    libxtrans/Xtranssock.c; do
+      echo "Fixing /usr in "$i"..."
+      sed -i "s@/usr@/@g" "$i"
+  done
 }
 
 build() {
   cd "$pkgname"
+  make clean
   make
 }
 

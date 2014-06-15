@@ -11,10 +11,12 @@ options=('strip')
 
 prepare() {
   cd "$pkgname"
-
   # Patch definitions
   sed -i -e "s@/usr/@/@g" -e "s@-pipe -Os -mtune=i386@-O2 -pipe -fPIC@g" \
     -e "s@DESTIR@DESTDIR@g" standard_definitions.mk
+  if [ $CARCH == x86_64 ]; then
+    sed -i "s@-DNOERROR@-DNOERROR -D_XSERVER64@" standard_definitions.mk
+  fi
   sed -i "s@/usr@/@g" standard_definitions.mk
 }
 

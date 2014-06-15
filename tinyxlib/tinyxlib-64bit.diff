@@ -1,0 +1,11 @@
+--- tinyxlib/include/X11/extensions/XI.h
++++ tinyxlib-new/include/X11/extensions/XI.h
+@@ -53,6 +53,8 @@
+ 
+ #define _XI_H_
+ 
++#include <X11/Xmd.h>
++
+ #define sz_xGetExtensionVersionReq		8
+ #define sz_xGetExtensionVersionReply		32
+ #define sz_xListInputDevicesReq			4
