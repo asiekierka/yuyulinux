@@ -178,3 +178,23 @@
 +
 +#	rmir=\E[4l, smir=\E[4h, 
 +
+--- uuterm-old/xlib.c
++++ uuterm/xlib.c
+@@ -29,7 +29,7 @@
+ 	int *slices_y;
+ 	int curs_x, curs_y;
+ 	int curs_on;
+-	unsigned long colors[16];
++	unsigned long colors[256];
+ 	unsigned char *bits;
+ 	XImage image;
+ 	int x1, x2, color;
+@@ -151,7 +151,7 @@
+ 	p->image.data = p->bits = uuterm_alloc(p->image.bytes_per_line * d->cell_h);
+ 	XInitImage(&p->image);
+ 
+-	for (i=0; i<16; i++) {
++	for (i=0; i<256; i++) {
+ 		XColor color;
+ 		int R = 0x55 * (i&1);
+ 		int G = 0x55 * (i&2) >> 1;
