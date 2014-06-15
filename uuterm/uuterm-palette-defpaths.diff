@@ -139,6 +139,15 @@
  struct uucell
  {
  	uint32_t x[3];
+@@ -74,7 +74,7 @@
+ 	unsigned char inbuf[64];
+ 	int blink;
+ 	void *font;
+-	long priv[64];
++	long priv[512];
+ };
+ 
+ #define UU_FULLWIDTH 0xfffe
 @@ -105,3 +110,5 @@
  
  void uutty_resize(int, int, int);
@@ -189,12 +198,27 @@
  	unsigned char *bits;
  	XImage image;
  	int x1, x2, color;
-@@ -151,7 +151,7 @@
+@@ -151,19 +151,11 @@
  	p->image.data = p->bits = uuterm_alloc(p->image.bytes_per_line * d->cell_h);
  	XInitImage(&p->image);
  
 -	for (i=0; i<16; i++) {
 +	for (i=0; i<256; i++) {
  		XColor color;
- 		int R = 0x55 * (i&1);
- 		int G = 0x55 * (i&2) >> 1;
+-		int R = 0x55 * (i&1);
+-		int G = 0x55 * (i&2) >> 1;
+-		int B = 0x55 * (i&4) >> 2;
+-		if (i&8) {
+-			R += R + 0x55;
+-			G += G + 0x55;
+-			B += B + 0x55;
+-		} else if (i == 7) R = G = B = 0xAA;
+-		color.red = R<<8;
+-		color.green = G<<8;
+-		color.blue = B<<8;
++		color.red = palette[i][0] * 0x0101;
++		color.green = palette[i][1] * 0x0101;
++		color.blue = palette[i][2] * 0x0101;
+ 		XAllocColor(p->display, DefaultColormap(p->display, p->screen), &color);
+ 		p->colors[i] = color.pixel;
+ 	}

@@ -3,7 +3,6 @@ pkgver=2.0.21
 pkgrel=1
 pkgdesc="library that can create and read several streaming archive formats"
 arch=('i686' 'x86_64')
-groups=("base")
 url="http://libevent.org/"
 license=('BSD')
 options=('strip' 'debug' 'libtool')

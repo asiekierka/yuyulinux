@@ -3,7 +3,6 @@ pkgver=0.9.32
 pkgrel=1
 pkgdesc="PHP-style CGI for any shell"
 arch=('i686' 'x86_64')
-groups=("base")
 url="http://haserl.sourceforge.net"
 source=("http://downloads.sourceforge.net/project/haserl/haserl-devel/$pkgname-$pkgver.tar.gz")
 md5sums=('SKIP')

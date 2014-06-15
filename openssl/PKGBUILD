@@ -2,9 +2,7 @@ pkgname=("openssl" "openssl-doc")
 pkgbase=openssl
 pkgver=1.0.1h
 pkgrel=1
-pkgdesc='OpenSSL crypto library'
 arch=('i686' 'x86_64')
-groups=("base")
 url='http://www.openssl.org/'
 license=('custom')
 depends=("zlib")
@@ -16,6 +14,10 @@ prepare() {
 	cd ${srcdir}/${pkgbase}-${pkgver}
 	sed -i "s/-DTERMIO/-DTERMIOS/g" Configure
 	sed -i "s/defined(linux)/0/" crypto/ui/ui_openssl.c
+	for i in tools/c_rehash; do
+		echo "fixing paths in "$i"..."
+		sed -i "s@/usr/bin@/bin@g" $i
+	done
 }
 
 build() {
@@ -24,14 +26,18 @@ build() {
 	cp -Rv ${pkgbase} ${pkgbase}-shared
 	cd ${pkgbase}
 	./config --prefix=/ --openssldir=/etc/ssl --libdir=lib zlib no-shared "-Wa,--noexecstack -D_GNU_SOURCE"
+	sed -i "s@/usr/bin@/bin@g" Makefile
 	make -j1
 	cd ../${pkgbase}-shared
 	./config --prefix=/ --openssldir=/etc/ssl --libdir=lib zlib shared "-Wa,--noexecstack -D_GNU_SOURCE -fPIC"
+	sed -i "s@/usr/bin@/bin@g" Makefile
 	make -j1 build_libs
 	make -j1 build-shared
 }
 
 package_openssl() {
+	groups=("base")
+
 	cd ${srcdir}/${pkgbase}
 	make -j1 INSTALL_PREFIX=${pkgdir} MANDIR=/share/man install
 	rm -rf ${pkgdir}/share/man
@@ -45,6 +51,8 @@ package_openssl() {
 }
 
 package_openssl-doc() {
+	pkgdesc='OpenSSL crypto library documentation'
+
 	cd ${srcdir}/${pkgbase}
 	make -j1 INSTALL_PREFIX=${pkgdir} MANDIR=/share/man install
 	cd ${pkgdir}
