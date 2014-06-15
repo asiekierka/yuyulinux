@@ -6,13 +6,16 @@ arch=('i686' 'x86_64')
 url="http://www.etalabs.net/uuterm.html"
 license=('GPL')
 source=("http://yuyu.asie.pl/uuterm-2008-02-10.tar.xz"
-        "uuterm-32bit-blit.diff")
-md5sums=('SKIP' 'SKIP')
+        "uuterm-32bit-blit.diff"
+        "uuterm-palette-defpaths.diff"
+        "palette")
+md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
 makedepends=("ncurses")
 
 prepare() {
   cd "$pkgname"
   patch -p1 < ../uuterm-32bit-blit.diff
+  patch -p1 < ../uuterm-palette-defpaths.diff
 }
 
 build() {
@@ -23,10 +26,13 @@ build() {
 package() {
   cd "$pkgname"
   mkdir -p "$pkgdir"/bin
-  mkdir -p "$pkgdir"/share/fonts/uuterm
+  mkdir -p "$pkgdir"/share/fonts/ucf
+  mkdir -p "$pkgdir"/share/uuterm
   mkdir -p "$pkgdir"/share/terminfo/u
   install -c -o root -m 0755 uuterm-fb "$pkgdir"/bin/uuterm-fb
   install -c -o root -m 0755 ucfcomp "$pkgdir"/bin/ucfcomp
-  install -c -o root -m 0644 ytty/ytty.ucf "$pkgdir"/share/fonts/uuterm/ytty.ucf
+  install -c -o root -m 0644 ytty/ytty.ucf "$pkgdir"/share/fonts/ucf/ytty.ucf
+  install -c -o root -m 0644 ../palette "$pkgdir"/share/uuterm/palette
   tic -o "$pkgdir"/share/terminfo uuterm.ti
+  tic -o "$pkgdir"/share/terminfo uuterm-256color.ti
 }

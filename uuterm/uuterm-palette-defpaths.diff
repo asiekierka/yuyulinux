@@ -1,0 +1,180 @@
+--- uuterm-old/Makefile
++++ uuterm/Makefile
+@@ -6,7 +6,7 @@
+ HOSTCC = $(CC)
+ endif
+ 
+-SRCS = main.c term.c cell.c decomp.c tty.c alloc.c refresh.c ascii.c ucf.c font_load.c
++SRCS = main.c term.c cell.c decomp.c tty.c alloc.c refresh.c ascii.c ucf.c font_load.c palette.c
+ OBJS = $(SRCS:.c=.o)
+ OBJS_FB = fbcon.o dblbuf.o
+ OBJS_X11 = xlib.o
+--- uuterm-old/dblbuf.c
++++ uuterm/dblbuf.c
+@@ -91,23 +118,10 @@
+ {
+ 	struct dblbuf *b = (void *)&d->priv;
+ 	static const unsigned char cmap[8] = {0,4,2,6,1,5,3,7};
+-	static const unsigned char defpal[16][3] = {
+-#if 0
+-		{ 0,0,0 }, { 128,0,0 }, { 0,128,0 }, { 85,85,0 },
+-		{ 0,0,128 }, { 85,0,85 }, { 0,85,85 }, { 170,170,170 },
+-		{ 85,85,85 }, { 255,0,0 }, { 0,255,85 }, { 255,255,0 },
+-		{ 0,0,255 }, { 255,0,255 }, { 0,255,255 }, { 255,255,255 }
+-#else
+-		{ 0,0,0 }, { 96,0,0 }, { 0,96,0 }, { 85,85,0 },
+-		{ 0,0,144 }, { 96,0,96 }, { 0,96,96 }, { 170,170,170 },
+-		{ 85,85,85 }, { 255,85,85 }, { 85,255,85 }, { 255,255,85 },
+-		{ 85,85,255 }, { 255,85,255 }, { 85,255,255 }, { 255,255,255 }
+-#endif
+-	};
+ 	if (b->bytes_per_pixel > 1) {
+-		int R = defpal[color][0];
+-		int G = defpal[color][1];
+-		int B = defpal[color][2];
++		int R = palette[color][0];
++		int G = palette[color][1];
++		int B = palette[color][2];
+ 		if (b->bytes_per_pixel == 2) {
+ 			R >>= 3; G >>= 2; B >>= 3;
+ 			return (B | G<<5 | R<<11)
+--- uuterm-old/main.c
++++ uuterm/main.c
+@@ -27,11 +27,23 @@
+ 	struct timeval tv;
+ 	void *buf;
+ 
++	char* font_path = DEFAULT_FONT_PATH;
++	char* palette_path = DEFAULT_PALETTE_PATH;
++
++	if(getenv("UUTERM_FONT") != NULL)
++		font_path = getenv("UUTERM_FONT");
++
++	if(getenv("UUTERM_PALETTE") != NULL)
++		palette_path = getenv("UUTERM_PALETTE");
++
+ 	setlocale(LC_CTYPE, "");
+ 
+-	if (ucf_load(&f, getenv("UUTERM_FONT")) < 0
++	if (ucf_load(&f, font_path) < 0
+ 	 && ucf_init(&f, vga_ascii_ucf, vga_ascii_ucf_size) < 0)
+ 		return 1;
++
++	// the result is ignored because a default 16-color palette is bundled in uuterm.h
++	palette_load(palette_path);
+ 
+ 	d.cell_w = 8;
+ 	d.cell_h = 16;
+--- /dev/null
++++ uuterm/palette.c
+@@ -0,0 +1,40 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#include "uuterm.h"
++
++unsigned char palette[256][3] = {
++	{ 0,0,0 }, { 96,0,0 }, { 0,96,0 }, { 85,85,0 },
++	{ 0,0,144 }, { 96,0,96 }, { 0,96,96 }, { 170,170,170 },
++	{ 85,85,85 }, { 255,85,85 }, { 85,255,85 }, { 255,255,85 },
++	{ 85,85,255 }, { 255,85,255 }, { 85,255,255 }, { 255,255,255 }
++};
++
++int palette_load(const char *filename)
++{
++	FILE *fpal = fopen(filename, "r");
++	if(fpal == NULL)
++		return -1;
++
++	int i = 0;
++	int j;
++	char* entry = malloc(sizeof(char) * 128);
++
++	while(i < 256 && !feof(fpal)) {
++		fgets(entry, 128, fpal);
++		if(entry == NULL) break;
++		int entryl = strlen(entry);
++		if(entryl >= 5 && entry[0] >= '0' && entry[1] <= '9') {
++			char* loc = entry;
++			for(j = 0; j < 3; j++) {
++				palette[i][j] = strtoul(loc, &loc, 10);
++			}
++			i++;
++		}
++	}
++
++	fclose(fpal);
++
++	return 0;
++}
+--- uuterm-old/term.c
++++ uuterm/term.c
+@@ -207,6 +207,14 @@
+ 			if (!t->param[i]) {
+ 				t->attr = 0;
+ 				t->color = 7;
++			} else if(i > 0 && t-> param[i] == 5) { // color
++				if(t->param[i - 1] >= 40) { // background
++					t->color &= ~(255<<8);
++					t->color |= t->param[++i] << 8;
++				} else { // foreground
++					t->color &= ~255;
++					t->color |= t->param[++i];
++				}
+ 			} else if (t->param[i] < 8) {
+ 				t->attr |= attr[t->param[i]-1];
+ 			} else if (t->param[i]-21 < 7) {
+--- uuterm-old/uuterm.h
++++ uuterm/uuterm.h
+@@ -4,6 +4,11 @@
+ #include <stdint.h>
+ #include <wchar.h>
+ 
++#define DEFAULT_PALETTE_PATH "/share/uuterm/palette"
++#define DEFAULT_FONT_PATH "/share/fonts/ucf/ytty.ucf"
++
++extern unsigned char palette[256][3];
++
+ struct uucell
+ {
+ 	uint32_t x[3];
+@@ -105,3 +110,5 @@
+ 
+ void uutty_resize(int, int, int);
+ int uutty_open(char **, int, int);
++
++int palette_load(const char*);
+--- /dev/null
++++ uuterm/uuterm-256color.ti
+@@ -0,0 +1,30 @@
++uuterm-256color|uuterm experimental with 256 colors, 
++	am, eo, mir, msgr, xenl, xon, 
++	colors#256, ncv#3, pairs#32767, 
++	it#8, ncv#2, 
++	bel=^G, blink=\E[5m, bold=\E[1m, 
++	civis=\E[?25l\E[?1c, clear=\E[H\E[J, 
++	cnorm=\E[?25h\E[?0c, cr=^M, csr=\E[%i%p1%d;%p2%dr, 
++	cub1=^H, cud1=^J, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
++	cuu1=\E[A, cvvis=\E[?25h\E[?8c, dch=\E[%p1%dP, dch1=\E[P, 
++	dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, 
++	el=\E[K, el1=\E[1K, flash=\E[?5h\E[?5l$<200/>, home=\E[H, 
++	hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, 
++	il=\E[%p1%dL, il1=\E[L, ind=^J, kb2=\E[G, kbs=\177, 
++	kcbt=\E[Z, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
++	kdch1=\E[3~, kend=\E[4~, kf1=\E[[A, kf10=\E[21~, 
++	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
++	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
++	kf19=\E[33~, kf2=\E[[B, kf20=\E[34~, kf3=\E[[C, kf4=\E[[D, 
++	kf5=\E[[E, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
++	khome=\E[1~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, kspd=^Z, 
++	op=\E[37;40m, nel=^M^J, rc=\E8, rev=\E[7m, ri=\EM, rmpch=\E[10m,
++	rmso=\E[27m, rmul=\E[24m, rs1=\Ec\E]R, sc=\E7, 
++	setab=\E[47;05;%p1%dm, setaf=\E[37;05;%p1%dm, 
++	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m, 
++	sgr0=\E[0;10m, smpch=\E[11m,
++	smso=\E[7m, smul=\E[4m, tbc=\E[3g, u6=\E[%i%d;%dR, 
++	u7=\E[6n, u8=\E[?6c, u9=\E[c, vpa=\E[%i%p1%dd, 
++
++#	rmir=\E[4l, smir=\E[4h, 
++
