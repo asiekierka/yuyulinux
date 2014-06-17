@@ -11,15 +11,17 @@ md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 prepare() {
   cd "$pkgname-$pkgver"
-  cp ../fallback.c ncurses/
+  #cp ../fallback.c ncurses/
   patch -p0 < ../ncurses-5.9-rxvt-unicode-9.15.patch
 }
 
 build() {
   cd "$pkgname-$pkgver"
+  # that </dev/ptmx is to fix an insanely stupid test for poll which
+  # needs to block on fd 1 (which they assume to be a tty).
+  # (credit: sabotage devs)
   ./configure --prefix=/ --with-normal --without-tests --enable-widec --with-shared --enable-sigwinch \
-    --with-fallbacks="linux vt100 xterm xterm256-color" --without-cxx-binding --enable-ext-colors \
-    --infodir=/share/info --mandir=/share/man
+    --enable-ext-colors --infodir=/share/info --mandir=/share/man --without-dlsym </dev/ptmx
   make
 }
 

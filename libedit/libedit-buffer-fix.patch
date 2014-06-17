@@ -1,0 +1,20 @@
+--- libedit-old/src/terminal.c
++++ libedit-new/src/terminal.c
+@@ -858,7 +858,6 @@
+ terminal_set(EditLine *el, const char *term)
+ {
+ 	int i;
+-	char buf[TC_BUFSIZE];
+ 	char *area;
+ 	const struct termcapstr *t;
+ 	sigset_t oset, nset;
+@@ -868,8 +867,7 @@
+ 	(void) sigaddset(&nset, SIGWINCH);
+ 	(void) sigprocmask(SIG_BLOCK, &nset, &oset);
+ 
+-	area = buf;
+-
++	area = NULL;
+ 
+ 	if (term == NULL)
+ 		term = getenv("TERM");

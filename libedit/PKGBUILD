@@ -8,19 +8,24 @@ url="http:/thrysoee.dk/editline"
 license=("BSD")
 provides=("libreadline")
 source=("http://thrysoee.dk/editline/$filename.tar.gz"
-        "libedit_readlineh.patch")
+        "libedit_readlineh.patch"
+        "libedit-buffer-fix.patch")
 depends=("ncurses")
-md5sums=('SKIP' 'SKIP')
+md5sums=('SKIP' 'SKIP' 'SKIP')
 options=('strip' 'debug')
 
 prepare() {
   cd "$filename"
   patch -p1 <../libedit_readlineh.patch
+
+  # http://bugs.mysql.com/bug.php?id=58497
+  # the bug seems to be erratic, but i have personally experienced it
+  patch -p1 <../libedit-buffer-fix.patch
 }
 
 build() {
   cd "$filename"
-  CFLAGS="-D__STDC_ISO_10646__" ./configure --prefix=/ --enable-widec --disable-examples
+  LDFLAGS="-static" CFLAGS="-O0 -g -D__STDC_ISO_10646__" ./configure --prefix=/ --enable-widec --disable-examples
   make
 }
 

@@ -4,7 +4,8 @@ pkgrel=1
 pkgdesc="GNU debugger"
 arch=('i686' 'x86_64')
 depends=('libgmp' 'libmpfr' 'libmpc' 'zlib' 'libreadline' 'linux-libre-headers')
-makedepends=("sabotage-buildtools")
+# python because gdb includes python debugging code for some reason (!?)
+makedepends=("sabotage-buildtools" "python")
 url="http://www.gnu.org/software/gdb/"
 license=('GPL')
 source=("http://ftp.gnu.org/gnu/gdb/gdb-$pkgver.tar.bz2"
@@ -58,11 +59,11 @@ EOF
 
 build() {
   cd "gdb-$pkgver"/build
-  LDFLAGS="-static $LDFLAGS" CFLAGS="-D_GNU_SOURCE -D_LARGEFILE64_SOURCE -Dgnu_fnmatch=fnmatch -O0 -g" ../configure \
+  CFLAGS="-D_GNU_SOURCE -D_LARGEFILE64_SOURCE -Dgnu_fnmatch=fnmatch $CFLAGS" ../configure \
     -C --prefix=/ --disable-werror --disable-tls --with-system-zlib=yes \
     --enable-gdbserver=no --enable-64-bit-bfd \
     --enable-targets=x86_64-linux,i386-linux \
-    --disable-sim --disable-tui --disable-bootstrap
+    --disable-sim --disable-tui
   make
 }
 
