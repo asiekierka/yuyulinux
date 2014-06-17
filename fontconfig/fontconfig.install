@@ -1,0 +1,11 @@
+post_install() {
+	fc-cache -f -v
+}
+
+post_upgrade() {
+	fc-cache -f -v
+}
+
+pre_remove() {
+	rm -rf /var/cache/fontconfig
+}

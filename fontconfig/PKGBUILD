@@ -9,10 +9,11 @@ source=("http://www.freedesktop.org/software/fontconfig/release/$pkgname-$pkgver
 md5sums=('SKIP')
 depends=("libexpat" "freetype")
 makedepends=("pkgconf")
+install=fontconfig.install
 
 build() {
   cd "$pkgname-$pkgver"
-  ./configure --prefix=/
+  ./configure --prefix=/ --with-default-fonts=/share/fonts
   make
 }
 
