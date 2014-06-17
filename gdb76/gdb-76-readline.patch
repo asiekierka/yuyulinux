@@ -1,0 +1,18 @@
+some newer version of readline uses history_max_entries
+as an alias to max_input_history.
+all other occurences in the code use max_input_history.
+
+fix for consistency and to make the code again work with
+libedit as a drop-in replacement for readline.
+
+--- gdb-7.6.2.org/gdb/top.c
++++ gdb-7.6.2/gdb/top.c
+@@ -1446,7 +1446,7 @@
+ 
+       /* Restore previous value before throwing.  */
+       if (history_is_stifled ())
+-	history_size_setshow_var = history_max_entries;
++	history_size_setshow_var = max_input_history;
+       else
+ 	history_size_setshow_var = UINT_MAX;
+ 

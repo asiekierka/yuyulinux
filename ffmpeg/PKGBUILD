@@ -7,17 +7,21 @@ source=("http://www.ffmpeg.org/releases/$pkgname-$pkgver.tar.bz2")
 md5sums=('SKIP')
 options=('strip' 'debug')
 depends=("bzip2" "zlib" "libvorbis" "openssl")
+makedepends=("nasm")
 
 prepare() {
   cd "$pkgname-$pkgver"
   sed -i -e "s/pr -n -t/echo/g" \
     -e "s/| pr -r -3 -t//g" configure
+  sed -i "s/#undef _GNU_SOURCE//" libavutil/error.c
 }
 
 build() {
   cd "$pkgname-$pkgver"
-  ./configure --prefix=/ --enable-libvorbis --enable-openssl \
-    --disable-indev=oss --disable-outdev=oss
+  CFLAGS="$CFLAGS -D_GNU_SOURCE -fPIC" \
+    ./configure --prefix=/ --enable-libvorbis --enable-openssl \
+    --disable-indev=oss --disable-outdev=oss --disable-static \
+    --enable-shared --enable-version3
   make
 }
 

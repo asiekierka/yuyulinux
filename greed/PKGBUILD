@@ -1,0 +1,26 @@
+pkgname=greed
+pkgver=3.10
+pkgrel=1
+pkgdesc="simple command-line game"
+arch=('i686' 'x86_64')
+groups=("base")
+source=("http://hisham.hm/$pkgname/releases/$pkgver/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  sed -i -e "s@/usr/games/lib@~@" -e "s@/usr/games@/bin@" -e "s@-lcurses@-lncursesw@" Makefile
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  mkdir -p "$pkgdir"/bin
+  mkdir -p "$pkgdir"/share/man/man6
+  install -c -m 0755 -o root greed "$pkgdir"/bin
+  install -c -m 0644 -o root greed.6 "$pkgdir"/share/man/man6
+}

@@ -1,0 +1,32 @@
+pkgname=mpv
+pkgver=0.3.11
+pkgrel=1
+pkgdesc="video player and encoder"
+arch=('i686' 'x86_64')
+url="http://mpv.io"
+source=("https://github.com/mpv-player/mpv/archive/v$pkgver.tar.gz")
+md5sums=('SKIP')
+depends=("ffmpeg")
+makedepends=("python2" "libsdl2" "tinyxlib")
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  sed -i "s/XF86XK_MenuKB/XK_Menu/g" video/out/x11_common.c
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  python2 bootstrap.py
+
+  sed -i "s/#!\/usr\/bin\/env python/#!\/bin\/python2/g" waf
+
+  python2 waf configure --prefix=/ --disable-iconv --enable-sdl2 \
+    --disable-sdl --disable-oss-audio --disable-pulse \
+    --enable-alsa --enable-x11 --enable-xext --disable-lua --disable-libass
+  python2 waf build $MAKEFLAGS
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  python2 waf install --destdir="$pkgdir"
+}

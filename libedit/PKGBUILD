@@ -1,0 +1,38 @@
+pkgname=libedit
+pkgver=0.48.0
+pkgrel=1
+filename=libedit-20140213-3.1
+pkgdesc="BSD command line editing library"
+arch=('i686' 'x86_64')
+url="http:/thrysoee.dk/editline"
+license=("BSD")
+provides=("libreadline")
+source=("http://thrysoee.dk/editline/$filename.tar.gz"
+        "libedit_readlineh.patch")
+depends=("ncurses")
+md5sums=('SKIP' 'SKIP')
+options=('strip' 'debug')
+
+prepare() {
+  cd "$filename"
+  patch -p1 <../libedit_readlineh.patch
+}
+
+build() {
+  cd "$filename"
+  CFLAGS="-D__STDC_ISO_10646__" ./configure --prefix=/ --enable-widec --disable-examples
+  make
+}
+
+package() {
+  cd "$filename"
+  make DESTDIR="$pkgdir" install
+
+  # from sabotage - to use libedit as a 33% lighter readline
+  ln -sf libedit.a "$pkgdir"/lib/libreadline.a
+  ln -sf libedit.so "$pkgdir"/lib/libreadline.so
+  mkdir -p "$pkgdir"/include/readline
+  touch "$pkgdir"/include/readline/history.h
+  touch "$pkgdir"/include/readline/tilde.h
+  ln -sf ../editline/readline.h "$pkgdir"/include/readline/readline.h
+}

@@ -1,0 +1,13 @@
+pkgname=sabotage-buildtools
+pkgver=0.1
+pkgrel=1
+pkgdesc="useful build tools from Sabotage Linux"
+arch=('i686' 'x86_64')
+url="http://github.com/sabotage-linux/sabotage"
+source=("gnulibfix" "libibertyfix")
+md5sums=('SKIP' 'SKIP')
+
+package() {
+  mkdir -p "$pkgdir"/bin
+  cp libibertyfix gnulibfix "$pkgdir"/bin
+}

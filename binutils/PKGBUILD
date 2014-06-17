@@ -8,12 +8,14 @@ url="http://www.gnu.org/software/binutils"
 license=('GPL')
 source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.bz2")
 md5sums=('SKIP')
+makedepends=("sabotage-buildtools")
 
 prepare() {
   cd "$pkgname-$pkgver"
   if [ -f "./config.cache" ]; then
     rm config.cache
   fi
+  libibertyfix libiberty
 }
 
 build() {

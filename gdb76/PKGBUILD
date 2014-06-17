@@ -1,0 +1,73 @@
+pkgname="gdb76"
+pkgver=7.6.2
+pkgrel=1
+pkgdesc="GNU debugger"
+arch=('i686' 'x86_64')
+depends=('libgmp' 'libmpfr' 'libmpc' 'zlib' 'libreadline' 'linux-libre-headers')
+makedepends=("sabotage-buildtools")
+url="http://www.gnu.org/software/gdb/"
+license=('GPL')
+source=("http://ftp.gnu.org/gnu/gdb/gdb-$pkgver.tar.bz2"
+        "gdb-threaddb.patch"
+        "gdb-linux_nat.patch"
+        "gdb-amd64-debugreg.patch"
+        "gdb-arm-gentmap.patch"
+        "gdb-76-linux-low-threaddb.patch"
+        "gdb-76-readline.patch"
+        "gdb-76-pid_t.patch")
+md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+
+prepare() {
+  cd "gdb-$pkgver"
+  libibertyfix libiberty
+  gnulibfix gdb/gnulib/import
+  find . -name 'configure' -exec sed -i 's,MAKEINFO="$MISSING makeinfo",MAKEINFO=true,' '{}' \;
+
+  patch -p1 < ".."/gdb-threaddb.patch || exit 1
+  patch -p1 < "../gdb-linux_nat.patch" || exit 1
+  patch -p1 < "../gdb-amd64-debugreg.patch" || exit 1
+  patch -p1 < "../gdb-arm-gentmap.patch" || exit 1
+  patch -p1 < ".."/gdb-76-linux-low-threaddb.patch || exit 1
+  patch -p1 < ".."/gdb-76-readline.patch || exit 1
+  patch -p1 < ".."/gdb-76-pid_t.patch || exit 1
+
+  mkdir -p build
+  cd build
+  if [-f config.cache]; then mv ../config.cache .
+  else touch config.cache; fi
+
+  # fixing implicit declaration in recursively called (by make) configure tests...
+  cat << EOF >> config.cache
+  bash_cv_must_reinstall_sighandlers=yes
+  bash_cv_func_sigsetjmp=yes
+  bash_cv_func_strcoll_broken=no 
+  bash_cv_func_ctype_nonascii=no
+  ac_cv_func_strncmp_works=yes
+  ac_cv_c_stack_direction=-1
+  gt_cv_func_gnugettext1_libintl=yes
+EOF
+  # readline and and libiberty have broken checks; but we have to copy config.cache
+  # everywhere to get cache.
+  for culprit in readline libiberty libdecnumber opcodes readline bfd ; do
+	mkdir -p $culprit
+	cp config.cache $culprit/
+  done
+  ln -sf /lib/libreadline.a readline/libreadline.a
+  sed -i 's/noconfigdirs=""/noconfigdirs="intl readline"/' ../configure
+}
+
+build() {
+  cd "gdb-$pkgver"/build
+  LDFLAGS="-static $LDFLAGS" CFLAGS="-D_GNU_SOURCE -D_LARGEFILE64_SOURCE -Dgnu_fnmatch=fnmatch -O0 -g" ../configure \
+    -C --prefix=/ --disable-werror --disable-tls --with-system-zlib=yes \
+    --enable-gdbserver=no --enable-64-bit-bfd \
+    --enable-targets=x86_64-linux,i386-linux \
+    --disable-sim --disable-tui --disable-bootstrap
+  make
+}
+
+package() {
+  cd "gdb-$pkgver"/build
+  make DESTDIR="$pkgdir" install-gdb
+  rm "$pkgdir"/lib/charset.alias
+}

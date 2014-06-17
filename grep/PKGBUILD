@@ -8,10 +8,17 @@ url="http://gnu.org/software/diffutils/"
 license=('GPL')
 source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz")
 md5sums=('SKIP')
+makedepends=("sabotage-buildtools")
+
+prepare() {
+  cd "$pkgname-$pkgver"
+}
 
 build() {
   cd "$pkgname-$pkgver"
-  ./configure --prefix=/
+  gnulibflags=$(gnulibfix lib)
+  CFLAGS="$CFLAGS $gnulibflags" \
+    ./configure --prefix=/
   make
 }
 

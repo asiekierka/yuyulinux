@@ -1,0 +1,26 @@
+pkgname=dmenu
+pkgver=4.5
+pkgrel=1
+pkgdesc="dwm dynamic menu"
+arch=('i686' 'x86_64')
+url="http://tools.suckless.org/dmenu"
+source=("http://dl.suckless.org/tools/$pkgname-$pkgver.tar.gz"
+        "dmenu-tinyxlib.patch")
+md5sums=('SKIP' 'SKIP')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  patch -p1 <../dmenu-tinyxlib.patch
+  sed -i "s/XINERAMALIBS  =/#XINERAMALIBS  =/" config.mk
+  sed -i "s/XINERAMAFLAGS =/#XINERAMAFLAGS =/" config.mk
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  make PREFIX=/
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" PREFIX=/ install
+}
