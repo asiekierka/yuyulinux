@@ -1,0 +1,21 @@
+pkgname=fribidi
+pkgver=0.19.6
+pkgrel=1
+pkgdesc="Unicode Bidirectional Algorithm implementation"
+arch=('i686' 'x86_64')
+url="http://fribidi.org"
+license=('GPL')
+source=("http://fribidi.org/download/fribidi-$pkgver.tar.bz2")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+build() {
+  cd "fribidi-$pkgver"
+  ./configure --prefix=/ --disable-deprecated --with-glib=no
+  make
+}
+
+package() {
+  cd "fribidi-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

@@ -1,0 +1,55 @@
+From 1b62f8fa58eba3e535134912da2fa305fb7d3021 Mon Sep 17 00:00:00 2001
+From: anselm@garbe.us <unknown>
+Date: Sat, 17 Mar 2012 17:14:17 +0000
+Subject: applied Andreas Amann fullscreen fix, some minor modifications
+
+---
+diff --git a/dwm.c b/dwm.c
+index 2d44442..10b0d0d 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -1261,8 +1261,11 @@ movemouse(const Arg *arg) {
+ 				&& (abs(nx - c->x) > snap || abs(ny - c->y) > snap))
+ 					togglefloating(NULL);
+ 			}
+-			if(!selmon->lt[selmon->sellt]->arrange || c->isfloating)
++			if(!selmon->lt[selmon->sellt]->arrange || c->isfloating) {
++				if(c->isfullscreen)
++					setfullscreen(c, False);
+ 				resize(c, nx, ny, c->w, c->h, True);
++			}
+ 			break;
+ 		}
+ 	} while(ev.type != ButtonRelease);
+@@ -1397,8 +1400,11 @@ resizemouse(const Arg *arg) {
+ 				&& (abs(nw - c->w) > snap || abs(nh - c->h) > snap))
+ 					togglefloating(NULL);
+ 			}
+-			if(!selmon->lt[selmon->sellt]->arrange || c->isfloating)
++			if(!selmon->lt[selmon->sellt]->arrange || c->isfloating) {
++				if(c->isfullscreen)
++					setfullscreen(c, False);
+ 				resize(c, c->x, c->y, nw, nh, True);
++			}
+ 			break;
+ 		}
+ 	} while(ev.type != ButtonRelease);
+@@ -1744,6 +1750,8 @@ togglefloating(const Arg *arg) {
+ 	if(selmon->sel->isfloating)
+ 		resize(selmon->sel, selmon->sel->x, selmon->sel->y,
+ 		       selmon->sel->w, selmon->sel->h, False);
++	else if(selmon->sel->isfullscreen)
++		setfullscreen(selmon->sel, False);
+ 	arrange(selmon);
+ }
+ 
+@@ -2020,7 +2028,6 @@ updatewindowtype(Client *c) {
+ 
+ 	if(state == netatom[NetWMFullscreen])
+ 		setfullscreen(c, True);
+-
+ 	if(wtype == netatom[NetWMWindowTypeDialog])
+ 		c->isfloating = True;
+ }
+--
+cgit v0.9.0.3-65-g4555

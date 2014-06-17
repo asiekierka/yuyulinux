@@ -9,7 +9,7 @@ source=("http://yuyu.asie.pl/tinyxlib-fee6aac.tar.xz"
 	"tinyxlib-fix-makefile.diff"
         "tinyxlib-musl.patch")
 md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
-options=('strip' 'debug')
+#options=('strip' 'debug')
 
 prepare() {
   cd "$pkgname"
@@ -18,7 +18,7 @@ prepare() {
   patch -p1 <../tinyxlib-musl.patch
 
   # Patch definitions
-  sed -i -e "s@/usr/@/@g" -e "s@-pipe -Os -mtune=i386@-O2 -pipe -fPIC@g" standard_definitions.mk
+  sed -i -e "s@/usr/@/@g" -e "s@-pipe -Os -mtune=i386@-O0 -g -pipe -fPIC@g" standard_definitions.mk
 
   # Fix CMS build
   cp ../Xcms.h include/X11/

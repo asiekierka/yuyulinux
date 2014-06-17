@@ -6,7 +6,7 @@ arch=('i686' 'x86_64')
 url="http://mpv.io"
 source=("https://github.com/mpv-player/mpv/archive/v$pkgver.tar.gz")
 md5sums=('SKIP')
-depends=("ffmpeg")
+depends=("ffmpeg" "libass")
 makedepends=("python2" "libsdl2" "tinyxlib")
 
 prepare() {
@@ -22,7 +22,7 @@ build() {
 
   python2 waf configure --prefix=/ --disable-iconv --enable-sdl2 \
     --disable-sdl --disable-oss-audio --disable-pulse \
-    --enable-alsa --enable-x11 --enable-xext --disable-lua --disable-libass
+    --enable-alsa --enable-x11 --enable-xext --disable-lua --enable-libass
   python2 waf build $MAKEFLAGS
 }
 

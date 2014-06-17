@@ -1,0 +1,22 @@
+pkgname=libass
+pkgver=0.11.2
+pkgrel=1
+pkgdesc="subtitle rendering library"
+arch=('i686' 'x86_64')
+url="http://github.com/libass/libass"
+license=('GPL')
+source=("https://github.com/libass/libass/releases/download/$pkgver/$pkgname-$pkgver.tar.xz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+depends=("freetype" "fontconfig" "fribidi")
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

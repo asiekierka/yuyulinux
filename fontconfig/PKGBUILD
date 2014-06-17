@@ -1,0 +1,25 @@
+pkgname=fontconfig
+pkgver=2.11.1
+pkgrel=1
+pkgdesc="font configuration manager"
+arch=('i686' 'x86_64')
+url="http://www.freedesktop.org/wiki/Software/fontconfig/"
+license=('GPL')
+source=("http://www.freedesktop.org/software/fontconfig/release/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+depends=("libexpat" "freetype")
+makedepends=("pkgconf")
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  cd "$pkgdir"/share/doc/fontconfig
+  # why keep duplicates of the same exact content?
+  rm *.pdf *.txt  
+}
