@@ -1,7 +1,7 @@
 # big thanks to sabotage linux devs for the patches
 
 pkgname=alsa-lib
-pkgver=1.0.27.2
+pkgver=1.0.28
 pkgrel=1
 pkgdesc="ALSA sound library"
 arch=('i686' 'x86_64')
@@ -20,17 +20,19 @@ md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 build() {
   cd "$pkgname-$pkgver"
-  rm -f src/compat/hsearch_r.c
-  touch src/compat/hsearch_r.c
+
+  # needed in 1.0.27.2 and below
+  # rm -f src/compat/hsearch_r.c
+  # touch src/compat/hsearch_r.c
+  # patch -p1 < "$srcdir"/alsa-lib_mips_atomic.patch
+  # patch -p1 < "$srcdir"/alsa-lib_kernel_off_t.patch
+  # patch -p1 < "$srcdir"/alsa-lib-portable-mutex.patch
+  # patch -p0 < "$srcdir"/alsa-lib-fix-global-h.patch
 
   patch -p1 < "$srcdir"/alsa-lib_pcm_h.patch
   patch -p1 < "$srcdir"/alsa-lib_mixed_types.patch
-  patch -p1 < "$srcdir"/alsa-lib_mips_atomic.patch
   patch -p1 < "$srcdir"/alsa-lib_mask_inline.patch
-  patch -p1 < "$srcdir"/alsa-lib_kernel_off_t.patch
-  patch -p1 < "$srcdir"/alsa-lib-portable-mutex.patch
 
-  patch -p0 < "$srcdir"/alsa-lib-fix-global-h.patch
 
   for i in include/asoundlib.h include/asoundlib-head.h include/local.h; do
     echo "patching $i (<sys/poll.h> -> <poll.h>)"

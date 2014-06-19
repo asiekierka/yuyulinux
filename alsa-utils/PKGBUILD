@@ -1,7 +1,7 @@
 # big thanks to sabotage linux devs for the patches
 
 pkgname=alsa-utils
-pkgver=1.0.27.2
+pkgver=1.0.28
 pkgrel=1
 pkgdesc="ALSA sound library"
 arch=('i686' 'x86_64')
@@ -17,9 +17,10 @@ depends=("ncurses" "alsa-lib")
 build() {
   cd "$pkgname-$pkgver"
 
+  #patch -p1 < "$srcdir"/alsa-utils_signal_h.patch
+  #patch -p1 < "$srcdir"/alsa-utils_portable-mutex.patch
+
   patch -p1 < "$srcdir"/alsa-utils_mixer_widget.patch
-  patch -p1 < "$srcdir"/alsa-utils_signal_h.patch
-  patch -p1 < "$srcdir"/alsa-utils_portable-mutex.patch
 
   CFLAGS="$CFLAGS -I/include/ncursesw -D_BSD_SOURCE -D_POSIX_C_SOURCE=200809L -D_GNU_SOURCE" ./configure \
     --prefix=/ --disable-nls --disable-xmlto --disable-alsatest \
