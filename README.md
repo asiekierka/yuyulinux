@@ -30,6 +30,7 @@
         mount -o bind /dev $ROOT/dev
         mount -o bind /proc $ROOT/proc
         mount -o bind /sys $ROOT/sys
+        cp /etc/resolv.conf $ROOT/etc/
         chroot . /bin/mksh
         mdev -s
         exit
