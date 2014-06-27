@@ -31,5 +31,7 @@ package() {
   mkdir -p "$pkgdir"/share/doc
   mkdir -p "$pkgdir"/share/man/man1
   mkdir -p "$pkgdir"/bin
+  mkdir -p "$pkgdir"/lib
   make DESTDIR=$pkgdir BINDIR=/bin DOCDIR=/share/doc MANDIR=/share/man/man1 install
+  cp randr/librandr.a "$pkgdir"/lib/libXrandr.a
 }

@@ -3,7 +3,6 @@ pkgver=2.3.1
 pkgrel=1
 pkgdesc="a software construction tool"
 arch=('i686' 'x86_64')
-groups=("base")
 url="http://www.scons.org"
 license=('GPL')
 source=("http://prdownloads.sourceforge.net/scons/$pkgname-$pkgver.tar.gz")

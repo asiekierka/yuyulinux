@@ -1,6 +1,6 @@
 pkgname="pacman"
 pkgver=4.1.2
-pkgrel=1
+pkgrel=2
 pkgdesc="A library-based package manager with dependency support"
 arch=('i686' 'x86_64')
 url="http://www.archlinux.org/pacman/"
@@ -8,7 +8,7 @@ license=('GPL')
 groups=('base')
 depends=('bash' 'gnupg' 'openssl' 'libarchive>=3.1.2')
 checkdepends=('python2' 'fakechroot')
-options=('strip')
+options=('strip' 'debug')
 optdepends=('fakeroot: for makepkg usage as normal user')
 backup=("etc/makepkg.conf" "etc/pacman.conf")
 
@@ -35,7 +35,7 @@ prepare() {
 build() {
   cd "$pkgname-$pkgver"
   LIBTOOL="false" ./configure --prefix=/ --sysconfdir=/etc --localstatedir=/var --enable-doc \
-    --with-scriptlet-shell=/bin/bash --with-ldconfig=/bin/ldconfig --without-openssl --disable-nls
+    --with-scriptlet-shell=/bin/bash --with-ldconfig=/bin/ldconfig --disable-nls
   make
   make -C contrib
 }

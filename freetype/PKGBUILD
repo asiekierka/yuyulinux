@@ -1,6 +1,6 @@
 pkgname=("freetype")
 pkgver=2.5.3
-pkgrel=1
+pkgrel=2
 pkgdesc="font library"
 url="http://www.freetype.org"
 arch=('i686' 'x86_64')
@@ -15,7 +15,7 @@ prepare() {
 build() {
   cd "$pkgname-$pkgver"
   ./configure --prefix=/ --with-zlib --with-bzip2 --without-png \
-    --without-old-mac-fonts
+    --without-old-mac-fonts --disable-static
   make
 }
 

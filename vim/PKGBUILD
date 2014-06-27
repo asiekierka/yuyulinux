@@ -1,0 +1,24 @@
+pkgname=vim
+pkgver=7.4
+tardir=vim74
+pkgrel=1
+pkgdesc="Vi iMproved"
+arch=('i686' 'x86_64')
+source=("ftp://ftp.vim.org/pub/vim/unix/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+
+prepare() {
+  cd "$tardir"
+}
+
+build() {
+  cd "$tardir"
+  CFLAGS="-D_GNU_SOURCE" ./configure --prefix=/ --mandir=/share/man --localstatedir=/var/lib/vim \
+    --disable-nls --disable-netbeans --disable-gui --with-x=no --enable-multibyte || exit 1
+  make
+}
+
+package() {
+  cd "$tardir"
+  make DESTDIR=$pkgdir install
+}

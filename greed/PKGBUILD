@@ -3,7 +3,6 @@ pkgver=3.10
 pkgrel=1
 pkgdesc="simple command-line game"
 arch=('i686' 'x86_64')
-groups=("base")
 source=("http://hisham.hm/$pkgname/releases/$pkgver/$pkgname-$pkgver.tar.gz")
 md5sums=('SKIP')
 

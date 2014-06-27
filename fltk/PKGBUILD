@@ -1,0 +1,55 @@
+pkgname=("fltk" "fltk-examples" "fluid")
+pkgbase="fltk"
+pkgver=1.3.2
+pkgrel=2
+arch=('i686' 'x86_64')
+source=("http://fltk.org/pub/$pkgname/$pkgver/$pkgname-$pkgver-source.tar.gz"
+        "fltk-1.3.2-jpeg.patch")
+md5sums=('SKIP' 'SKIP')
+options=('strip')
+depends=('tinyxlib' 'libjpeg' 'libpng')
+
+prepare() {
+  cd "$pkgbase-$pkgver"
+  patch -p1 <../fltk-1.3.2-jpeg.patch
+}
+
+build() {
+  cd "$pkgbase-$pkgver"
+  CFLAGS="$CFLAGS -fPIC" ./configure --prefix=/ --with-x --disable-xinerama \
+    --disable-localjpeg --disable-localzlib --disable-localpng \
+    --enable-shared
+  make
+}
+
+package_fltk() {
+  pkgdesc="lightweight GUI toolkit"
+  options=('strip' 'debug')
+
+  cd "$pkgbase-$pkgver"
+  make DESTDIR="$pkgdir" install
+  cd "$pkgdir"
+  rm -r bin share
+  cd lib
+  rm *.a
+}
+
+package_fluid() {
+  pkgdesc="UI editor for fltk"
+  depends=("fltk")
+
+  cd "$pkgbase-$pkgver"
+  make DESTDIR="$pkgdir" install
+  cd "$pkgdir"
+  rm -r include lib share
+}
+
+package_fltk-examples() {
+  pkgdesc="fltk code examples"
+  depends=("fltk")
+
+  cd "$pkgbase-$pkgver"
+  make DESTDIR="$pkgdir" install
+  cd "$pkgdir"
+  rm -r include lib bin
+}

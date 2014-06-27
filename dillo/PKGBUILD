@@ -1,0 +1,21 @@
+pkgname=dillo
+pkgver=3.0.4
+pkgrel=1
+pkgdesc="FLTK web browser"
+arch=('i686' 'x86_64')
+url="http://dillo.org"
+source=("http://www.dillo.org/download/dillo-$pkgver.tar.bz2")
+md5sums=('SKIP')
+backup=("etc/dillo/dillorc" "etc/dillo/domainrc" "etc/dillo/dpidrc" "etc/dillo/keysrc")
+depends=("tinyxlib" "fltk" "libjpeg" "libpng" "libgif" "openssl")
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --enable-ipv6 --enable-ssl --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

@@ -3,6 +3,7 @@ pkgver=2.20
 pkgrel=1
 pkgdesc="diff"
 groups=("base")
+depends=("libpcre")
 arch=('i686' 'x86_64')
 url="http://gnu.org/software/diffutils/"
 license=('GPL')

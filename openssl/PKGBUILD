@@ -1,7 +1,7 @@
 pkgname=("openssl" "openssl-doc")
 pkgbase=openssl
 pkgver=1.0.1h
-pkgrel=1
+pkgrel=2
 arch=('i686' 'x86_64')
 url='http://www.openssl.org/'
 license=('custom')
@@ -23,16 +23,16 @@ prepare() {
 build() {
 	cd ${srcdir}
 	mv ${pkgbase}-${pkgver} ${pkgbase}
-	cp -Rv ${pkgbase} ${pkgbase}-shared
+	#cp -Rv ${pkgbase} ${pkgbase}-shared
 	cd ${pkgbase}
 	./config --prefix=/ --openssldir=/etc/ssl --libdir=lib zlib no-shared "-Wa,--noexecstack -D_GNU_SOURCE"
 	sed -i "s@/usr/bin@/bin@g" Makefile
 	make -j1
-	cd ../${pkgbase}-shared
-	./config --prefix=/ --openssldir=/etc/ssl --libdir=lib zlib shared "-Wa,--noexecstack -D_GNU_SOURCE -fPIC"
-	sed -i "s@/usr/bin@/bin@g" Makefile
-	make -j1 build_libs
-	make -j1 build-shared
+	#cd ../${pkgbase}-shared
+	#./config --prefix=/ --openssldir=/etc/ssl --libdir=lib zlib shared "-Wa,--noexecstack -D_GNU_SOURCE -fPIC"
+	#sed -i "s@/usr/bin@/bin@g" Makefile
+	#make -j1 build_libs
+	#make -j1 build-shared
 }
 
 package_openssl() {
@@ -41,13 +41,13 @@ package_openssl() {
 	cd ${srcdir}/${pkgbase}
 	make -j1 INSTALL_PREFIX=${pkgdir} MANDIR=/share/man install
 	rm -rf ${pkgdir}/share/man
-	cd ../${pkgbase}-shared
-	cp -f *.so* ${pkgdir}/lib
-	cd ${pkgdir}/lib
-	# Fix symlinks
-	rm libcrypto.so libssl.so
-	ln -s libcrypto.so.1.0.0 libcrypto.so
-	ln -s libssl.so.1.0.0 libssl.so
+	#cd ../${pkgbase}-shared
+	#cp -f *.so* ${pkgdir}/lib
+	#cd ${pkgdir}/lib
+	## Fix symlinks
+	#rm libcrypto.so libssl.so
+	#ln -s libcrypto.so.1.0.0 libcrypto.so
+	#ln -s libssl.so.1.0.0 libssl.so
 }
 
 package_openssl-doc() {

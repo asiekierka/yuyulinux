@@ -31,12 +31,18 @@
         mount -o bind /proc $ROOT/proc
         mount -o bind /sys $ROOT/sys
         chroot . /bin/mksh
+        mdev -s
+        exit
+        chroot . /bin/mksh
 
 5. Make any last-minute changes to your system now.
 
 6. If you already have a bootloader, skip this step and adapt the config in Step 7. Otherwise, install Syslinux to your hard drive with
 
-        extlinux --install /boot
+        pacman -S nano
+        nano /etc/fstab # create fstab file here
+        mkdir -p /boot/extlinux
+        extlinux --install /boot/extlinux
 
 7. If you installed Syslinux, create a /boot/extlinux.conf with the following contents, where sd?? is the partition you installed YuYuLinux to.
 

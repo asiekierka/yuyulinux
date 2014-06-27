@@ -1,6 +1,6 @@
 pkgname=("libcurl" "curl")
 pkgver=7.37.0
-pkgrel=1
+pkgrel=2
 pkgdesc="web download library"
 arch=('i686' 'x86_64')
 url=http://curl.haxx.se/
@@ -12,7 +12,7 @@ build() {
   cd "curl-$pkgver"
   PATH_SEPARATOR=":" ./configure --prefix=/ --with-ssl=/lib --without-gnutls --without-polarssl \
     --without-cyassl --without-nss --without-libssh2 --without-librtmp --without-winidn \
-    --with-libidn=/lib --without-nghttp2
+    --with-libidn=/lib --without-nghttp2 --disable-static --enable-shared
   make
 }
 
