@@ -1,0 +1,24 @@
+pkgname=ircii
+pkgver=20131230
+pkgrel=1
+pkgdesc="IRC client"
+arch=('i686' 'x86_64')
+url="http://eterna.com.au/ircii"
+source=("http://ircii.warped.com/$pkgname-$pkgver.tar.bz2")
+md5sums=('SKIP')
+depends=("ncurses")
+options=("strip")
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --enable-ipv6 --libexecdir=/lib/ircii --mandir=/share/man
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make -j1 DESTDIR="$pkgdir" install
+  cd "$pkgdir"/bin
+  rm irc
+  mv irc-$pkgver ircii
+}

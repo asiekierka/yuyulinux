@@ -1,9 +1,6 @@
-# $Id$
-# Maintainer: Dan McGee <dan@archlinux.org>
-
 pkgname=libarchive
 pkgver=3.1.2
-pkgrel=1
+pkgrel=2
 pkgdesc="library that can create and read several streaming archive formats"
 arch=('i686' 'x86_64')
 groups=("base")
@@ -23,7 +20,7 @@ build() {
   ./configure --prefix=/ --with-zlib --with-bz2lib --without-lzmadec --without-iconv \
 	--with-lzma --without-lzo2 --without-nettle --without-openssl \
 	--without-xml2 --without-expat --disable-xattr --disable-acl \
-	--enable-largefile
+	--enable-largefile --disable-static
   sed -i "s,#define HAVE_LCHMOD 1,,g" config.h
   make
 }
@@ -37,7 +34,6 @@ check() {
 package() {
   cd "$pkgname-$pkgver"
   make DESTDIR="$pkgdir" install
-  strip "$pkgdir"/lib/libarchive.a
   ln -s /bin/bsdtar "$pkgdir"/bin/tar
   ln -s /bin/bsdcpio "$pkgdir"/bin/cpio
 

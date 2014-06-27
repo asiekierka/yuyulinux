@@ -1,6 +1,6 @@
 pkgname=("imlib2" "imlib2-tools")
 pkgver=1.4.6
-pkgrel=1
+pkgrel=2
 pkgdesc="image loading library"
 arch=('i686' 'x86_64')
 source=("http://downloads.sourceforge.net/enlightenment/$pkgname-$pkgver.tar.bz2"
@@ -20,7 +20,7 @@ prepare() {
 build() {
   cd "imlib2-$pkgver"
   ./configure --prefix=/ --with-jpeg --with-png --with-gif --without-tiff \
-    --with-zlib --with-bzip2 --without-id3
+    --with-zlib --with-bzip2 --without-id3 --disable-static
   make
 }
 

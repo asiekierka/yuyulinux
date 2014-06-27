@@ -12,7 +12,7 @@ depends=("freetype" "fontconfig" "fribidi")
 
 build() {
   cd "$pkgname-$pkgver"
-  ./configure --prefix=/
+  ./configure --prefix=/ --disable-static
   make
 }
 

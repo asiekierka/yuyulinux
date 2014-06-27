@@ -1,0 +1,27 @@
+pkgname=mutt
+pkgver=1.5.23
+pkgrel=1
+pkgdesc="e-mail client"
+arch=('i686' 'x86_64')
+url="http://mutt.org"
+source=("https://bitbucket.org/mutt/mutt/downloads/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+depends=("ncurses" "openssl")
+options=("strip")
+backup=("etc/Muttrc")
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --disable-gpgme --disable-nls \
+    --with-ssl --with-curses --with-homespool=mail --with-mailpath=/var/mail \
+    --without-gnutls --without-sasl --without-tokyocabinet --without-qdbm \
+    --without-gdbm --without-bdb --without-idn
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  cd "$pkgdir"/etc
+  rm Muttrc.dist mime.types.dist
+}

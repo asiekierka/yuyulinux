@@ -1,6 +1,6 @@
 pkgname=libidn
 pkgver=1.28
-pkgrel=1
+pkgrel=2
 pkgdesc="International Domain Name library"
 arch=('i686' 'x86_64')
 groups=("base")
@@ -12,7 +12,7 @@ options=('strip' 'debug')
 
 build() {
   cd "libidn-$pkgver"
-  ./configure --prefix=/ --disable-nls
+  ./configure --prefix=/ --disable-nls --disable-static
   make
 }
 
