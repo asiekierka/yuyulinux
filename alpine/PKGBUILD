@@ -1,0 +1,29 @@
+pkgname=alpine
+pkgver=2.11
+pkgrel=1
+pkgdesc="e-mail client"
+arch=('i686' 'x86_64')
+url="http://patches.freeiz.com/alpine/"
+source=("https://www.mpeters.org/mirror/$pkgname-$pkgver.tar.xz")
+md5sums=('SKIP')
+depends=("openssl")
+options=("strip")
+backup=("etc/Muttrc")
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  sed -i "s/\/usr\/include/\/include/g" configure
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  CFLAGS="$CFLAGS -I/include -I/include/openssl" ./configure --prefix=/ --disable-nls \
+    --without-krb5 --without-ldap --without-tcl --with-c-client-target=slx
+  sed -i "s/\/usr\/include/\/include/g" imap/Makefile
+  make -j1
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

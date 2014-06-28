@@ -1,0 +1,22 @@
+pkgname=retawq
+pkgver=0.2.6c
+pkgrel=1
+pkgdesc="light text web browser"
+arch=('i686' 'x86_64')
+url="http://retawq.sourceforge.net"
+license=('GPL')
+source=("http://prdownloads.sourceforge.net/$pkgname/$pkgname-$pkgver.tar.gz")
+depends=("ncurses")
+md5sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --path-prefix=$pkgdir --enable-ipv6 \
+    --path-man=$pkgdir/share/man --path-doc=$pkgdir/share/doc
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make install
+}

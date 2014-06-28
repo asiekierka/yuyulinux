@@ -1,6 +1,6 @@
 pkgname=("libfftw" "fftw-wisdom")
 pkgver=3.3.4
-pkgrel=1
+pkgrel=2
 pkgdesc="fourier transform library"
 arch=('i686' 'x86_64')
 url="http://fftw.org"
@@ -14,7 +14,8 @@ prepare() {
 
 build() {
   cd "fftw-$pkgver"
-  CFLAGS="$CFLAGS -fPIC" ./configure --prefix=/ --enable-shared --enable-float
+  CFLAGS="$CFLAGS -fPIC" ./configure --prefix=/ --enable-shared --enable-float \
+    --disable-static
   make
 }
 
