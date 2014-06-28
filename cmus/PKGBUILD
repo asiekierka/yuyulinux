@@ -1,26 +1,27 @@
 pkgname=cmus
 pkgver=2.5.1
-pkgrel=1
+pkgrel=2
 pkgdesc="console music player"
 arch=('i686' 'x86_64')
 url="http://cmus.github.io"
 source=("https://github.com/cmus/cmus/archive/v$pkgver.tar.gz")
 md5sums=('SKIP')
 depends=("ncurses" "alsa-lib")
-makedepends=("libmad" "libflac" "libmodplug" "libvorbis" "libcddb" "libcue")
+makedepends=("libmad" "libflac" "libmodplug" "libvorbis" "libcddb" "libcue" "ffmpeg")
 optdepends=("libmad: mp3 support"
 	"libflac: FLAC support"
 	"libmodplug: .MOD/.S3M/.XM/.IT (chiptune) support"
 	"libvorbis: .ogg support"
 	"libcddb: CDDB library support"
 	"libcue: .cue support"
+	"ffmpeg: support for other formats"
 )
 
 build() {
   cd "$pkgname-$pkgver"
   ./configure prefix=/ CONFIG_CDDB=y CONFIG_CDIO=n CONFIG_DISCID=n CONFIG_FLAC=y CONFIG_MAD=y \
 CONFIG_MODPLUG=y CONFIG_MIKMOD=n CONFIG_MPC=n CONFIG_VORBIS=y CONFIG_OPUS=n CONFIG_WAVPACK=n \
-CONFIG_MP4=n CONFIG_AAC=n CONFIG_FFMPEG=n CONFIG_CUE=y CONFIG_ROAR=n CONFIG_PULSE=n \
+CONFIG_MP4=n CONFIG_AAC=n CONFIG_FFMPEG=y CONFIG_CUE=y CONFIG_ROAR=n CONFIG_PULSE=n \
 CONFIG_ALSA=y CONFIG_JACK=n CONFIG_SAMPLERATE=n CONFIG_AO=n CONFIG_ARTS=n CONFIG_OSS=n \
 CONFIG_SUN=n CONFIG_WAVEOUT=n
   make

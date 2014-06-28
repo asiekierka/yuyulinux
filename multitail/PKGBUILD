@@ -1,0 +1,30 @@
+pkgname=multitail
+pkgver=6.2.1
+pkgrel=1
+pkgdesc="viewing multiple files with tail at once"
+arch=('i686' 'x86_64')
+url="http://www.vanheusden.com/multitail/index.php"
+source=("http://www.vanheusden.com/$pkgname/$pkgname-$pkgver.tgz")
+md5sums=('SKIP')
+depends=("ncurses")
+backup=("etc/multitail.conf")
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  sed -i "s@/usr@@g" Makefile
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  mkdir -p "$pkgdir"/bin
+  mkdir -p "$pkgdir"/share/man/man1
+  mkdir -p "$pkgdir"/etc
+  make DESTDIR="$pkgdir" install
+  cd "$pkgdir"/etc
+  mv multitail.conf.new multitail.conf
+}

@@ -1,7 +1,7 @@
 pkgname=zip
 pkgver=3.0
 _pkgver=30
-pkgrel=1
+pkgrel=2
 pkgdesc='Zip'
 arch=('i686' 'x86_64')
 groups=("base")
@@ -18,4 +18,7 @@ build() {
 package() {
 	cd $pkgname$_pkgver
 	make -f unix/Makefile prefix=${pkgdir} install
+	cd "$pkgdir"
+	mkdir share
+	mv man share/
 }

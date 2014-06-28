@@ -22,18 +22,24 @@
 
 4. Execute the following commands **as root**, where $ROOT is the mountpoint of the partition you created in Step 2:
 
+        # create pacman directory structure
         mkdir -p $ROOT/var/cache/pacman
         mkdir -p $ROOT/var/lib/pacman
+        # install base packages and syslinux
         pacman -Sy -r $ROOT/ base
         pacman -S -r $ROOT/ syslinux
+        # prepare chroot
         cd $ROOT/
         mount -o bind /dev $ROOT/dev
         mount -o bind /proc $ROOT/proc
         mount -o bind /sys $ROOT/sys
         cp /etc/resolv.conf $ROOT/etc/
+        cat /proc/mounts > /etc/mtab
+        # go into chroot, create valid /dev structure
         chroot . /bin/mksh
         mdev -s
         exit
+        # go into chroot with proper /dev to fix mksh
         chroot . /bin/mksh
 
 5. Make any last-minute changes to your system now.

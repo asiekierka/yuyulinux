@@ -1,6 +1,6 @@
 pkgname=("linux-libre" "linux-libre-headers" "linux-libre-firmware")
 pkgver=3.14.9
-pkgrel=1
+pkgrel=2
 pkgdesc="fully free Linux kernel"
 arch=('i686' 'x86_64')
 url="http://linux-libre.fsfla.org/"

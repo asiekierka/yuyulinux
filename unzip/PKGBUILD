@@ -1,7 +1,7 @@
 pkgname=unzip
 pkgver=6.0
 _pkgver=60
-pkgrel=1
+pkgrel=2
 pkgdesc='Unzip'
 arch=('i686' 'x86_64')
 groups=("base")
@@ -18,4 +18,7 @@ build() {
 package() {
 	cd $pkgname$_pkgver
 	make -f unix/Makefile prefix=${pkgdir} install
+	cd "$pkgdir"
+	mkdir share
+	mv man share/
 }

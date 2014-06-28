@@ -1,0 +1,11 @@
+--- fi-old/buffer.h
++++ fi-1.36/buffer.h
+@@ -5,6 +5,8 @@
+ #ifndef __BUFFER_H__
+ #define __BUFFER_H__
+ 
++#include <time.h>
++
+ typedef enum { BET_REGULAR, BET_META, BET_MARKERLINE } be_type_t;
+ 
+ typedef struct

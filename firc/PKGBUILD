@@ -1,0 +1,25 @@
+pkgname=firc
+pkgver=1.36
+pkgrel=1
+pkgdesc="cli irc client"
+arch=('i686' 'x86_64')
+url="http://www.vanheusden.com/f-irc/index.php"
+source=("http://www.vanheusden.com/f-irc/fi-$pkgver.tgz"
+        "fi-1.36-time_t.patch")
+md5sums=('SKIP' 'SKIP')
+depends=("ncurses")
+
+prepare() {
+  cd "fi-$pkgver"
+  patch -p1 <../fi-1.36-time_t.patch
+}
+
+build() {
+  cd "fi-$pkgver"
+  CFLAGS="$CFLAGS -D_GNU_SOURCE" make DESTDIR="/" PREFIX="/"
+}
+
+package() {
+  cd "fi-$pkgver"
+  make DESTDIR="$pkgdir" PREFIX="/" install
+}
