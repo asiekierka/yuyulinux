@@ -1,0 +1,33 @@
+pkgname="libjpeg-turbo"
+pkgver=1.3.1
+pkgrel=1
+pkgdesc="fast JPEG library"
+arch=('i686' 'x86_64')
+url="http://libjpeg-turbo.virtualgl.org"
+source=("http://downloads.sourceforge.net/project/$pkgname/$pkgver/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+provides=("libjpeg=8")
+conflicts=("libjpeg")
+options=('strip' 'debug')
+makedepends=("nasm")
+
+prepare() {
+  cd "$pkgname-$pkgver"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --disable-static --enable-shared --mandir=/share/man \
+    --with-jpeg8
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make -j1 DESTDIR=$pkgdir install
+  install -m644 jpegint.h $pkgdir/include
+  cd "$pkgdir"/share
+  mkdir libjpeg
+  mv -v doc/* libjpeg/
+  mv -v libjpeg doc/
+}

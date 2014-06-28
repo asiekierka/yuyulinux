@@ -1,7 +1,7 @@
 pkgname=("libpcre" "libpcre++" "pcre")
 _pkgname=pcre
 pkgver=8.35
-pkgrel=1
+pkgrel=2
 pkgdesc="perl compatible regex library"
 arch=('i686' 'x86_64')
 url="http://www.pcre.org"
@@ -11,7 +11,7 @@ options=('strip' 'debug')
 
 build() {
   cd "$_pkgname-$pkgver"
-  ./configure --prefix=/
+  ./configure --prefix=/ --disable-static --enable-shared
   make
 }
 

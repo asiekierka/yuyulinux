@@ -1,6 +1,6 @@
-pkgname=("libjpeg")
+pkgname="libjpeg"
 pkgver=9a
-pkgrel=1
+pkgrel=2
 pkgdesc="JPEG library"
 arch=('i686' 'x86_64')
 url="http://libjpeg.sourceforge.net"
@@ -14,7 +14,7 @@ prepare() {
 
 build() {
   cd "jpeg-$pkgver"
-  ./configure --prefix=/
+  ./configure --prefix=/ --disable-static --enable-shared
   make
 }
 
