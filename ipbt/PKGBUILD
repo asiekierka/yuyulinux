@@ -1,0 +1,21 @@
+pkgname=ipbt
+pkgver=9487
+pkgrel=1
+pkgdesc="high-tech ttyrecord player"
+arch=('i686' 'x86_64')
+url="http://www.chiark.greenend.org.uk/~sgtatham/ipbt/"
+license=('BSD')
+source=("http://www.chiark.greenend.org.uk/~sgtatham/$pkgname/$pkgname-r$pkgver.tar.gz")
+md5sums=('SKIP')
+depends=("ncurses")
+
+build() {
+  cd "$pkgname-r$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-r$pkgver"
+  make DESTDIR="$pkgdir" install
+}

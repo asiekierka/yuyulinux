@@ -1,0 +1,29 @@
+pkgname=ttyrec
+pkgver=1.0.8
+pkgrel=1
+pkgdesc="TTY screen recorder"
+arch=('i686' 'x86_64')
+url="http://0xcc.net/ttyrec"
+license=('BSD')
+source=("http://0xcc.net/$pkgname/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+optdepends=("ipbt: ttyrecord player with rewind support")
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  echo "#include <fcntl.h>" >> io.h
+  sed -i "s/union wait/int/g" ttyrec.c
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  mkdir -p "$pkgdir"/bin
+  mkdir -p "$pkgdir"/share/man/man1
+  cp ttyrec ttyplay ttytime "$pkgdir"/bin/
+  cp ttyrec.1 ttyplay.1 ttytime.1 "$pkgdir"/share/man/man1/
+}
