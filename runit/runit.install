@@ -1,0 +1,14 @@
+post_upgrade() {
+	# move from the old svmgr format
+	if [ -d "/service/enabled" ]; then
+		for i in $(ls /service/enabled); do
+			if [ -d "/service/"$i ]; then
+				echo "[+] $i"
+			else
+				echo "[-] $i"
+				touch /service/$i/down
+			fi
+		done
+		rm -r /service/enabled
+	fi
+}

@@ -1,37 +1,43 @@
-#!/bin/ash
+#!/bin/mksh
 
 if [ ${#2} -gt 0 ]; then
-	if [ "z$1" = "zenable" ]; then
-		if [ -d "/service/enabled/"$2 ]; then
-			if [ "z$3" != 'zquiet' ]; then
-				echo The service is already enabled!
+	if [ "z$1" = "zdisable" ]; then
+		if [ -d "/service/"$2 ]; then
+			if [ -f "/service/"$2"/down" ]; then
+				if [ "z$3" != 'zquiet' ]; then
+					echo The service is already disabled!
+				fi
+			else
+				touch "/service/"$2"/down"
+				if [ "z$3" != 'zquiet' ]; then
+					echo "[-] $2"
+				fi
 			fi
 		else
-			ln -s /service/$2 /service/enabled/$2
-			if [ "z$3" != 'zquiet' ]; then
-				echo [+] $i
-			fi
+			echo This service does not exist!
 		fi
-	elif [ "z$1" = "zdisable" ]; then
-		if [ -d "/service/enabled/"$2 ]; then
-			rm /service/enabled/$2
-			if [ "z$3" != 'zquiet' ]; then
-				echo [-] $i
+	elif [ "z$1" = "zenable" ]; then
+		if [ -d "/service/"$2 ]; then
+			if [ -f "/service/"$2"/down" ]; then
+				rm /service/$2/down
+				if [ "z$3" != 'zquiet' ]; then
+					echo "[+] $2"
+				fi
+			else
+				if [ "z$3" != 'zquiet' ]; then
+					echo The service is already enabled!
+				fi
 			fi
 		else
-			if [ "z$3" != 'zquiet' ]; then
-				echo The service is already disabled!
-			fi
+			echo This service does not exist!
 		fi
 	fi
 elif [ "z$1" = "zlist" ]; then
 	for i in $(ls /service); do
-		if [ $i != "enabled" ]; then
-			if [ -d "/service/enabled/"$i ]; then
-				echo [+] $i
-			else
-				echo [-] $i
-			fi
+		if [ -f "/service/"$i"/down" ]; then
+			echo [-] $i
+		else
+			echo [+] $i
 		fi
 	done
 else

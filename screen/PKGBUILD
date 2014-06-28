@@ -1,0 +1,24 @@
+pkgname=screen
+pkgver=4.2.1
+pkgrel=1
+pkgdesc="terminal window manager"
+arch=('i686' 'x86_64')
+url="http://gnu.org/software/screen"
+license=('GPL')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  CFLAGS="$CFLAGS -D_GNU_SOURCE" ./configure --prefix=/ --enable-colors256
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

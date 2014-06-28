@@ -2,7 +2,7 @@
 
 pkgname=runit
 pkgver=2.1.1
-pkgrel=1
+pkgrel=2
 pkgdesc="runit init system"
 arch=('i686' 'x86_64')
 groups=("base")
@@ -11,6 +11,7 @@ license=('GPL')
 source=("http://smarden.org/$pkgname/$pkgname-$pkgver.tar.gz" "1" "2" "3" "svmgr")
 md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 depends=("busybox")
+install=runit.install
 
 prepare() {
   cd admin/"$pkgname-$pkgver"/src
