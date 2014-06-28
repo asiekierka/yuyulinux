@@ -1,0 +1,29 @@
+pkgname=libffi
+pkgver=3.1
+pkgrel=1
+pkgdesc="portable foreign function interface library"
+arch=('i686' 'x86_64')
+url="https://sourceware.org/libffi/"
+source=("ftp://sourceware.org/pub/$pkgname/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --disable-static --enable-shared --libdir=/lib
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  cd "$pkgdir"
+  if [ -d "lib32" ]; then
+    mv lib32/* lib/
+    rm -r lib32
+  fi
+  if [ -d "lib64" ]; then
+    mv lib64/* lib/
+    rm -r lib64
+  fi
+}

@@ -1,18 +1,18 @@
 pkgname=("linux-libre" "linux-libre-headers" "linux-libre-firmware")
-pkgver=3.14.8
+pkgver=3.14.9
 pkgrel=1
 pkgdesc="fully free Linux kernel"
 arch=('i686' 'x86_64')
 url="http://linux-libre.fsfla.org/"
 license=('GPL')
+#	"https://grsecurity.net/test/grsecurity-3.0-$pkgver-201406191250.patch"
 source=("http://linux-libre.fsfla.org/pub/linux-libre/releases/$pkgver-gnu/linux-libre-$pkgver-gnu.tar.xz"
-	"https://grsecurity.net/test/grsecurity-3.0-$pkgver-201406191250.patch"
 	"linux-posix-sed-3.8.patch"
 	"linux-noperl-timeconst.patch"
 	"linux-menuconfig.patch"
         "linux.config"
         "mktimeconst.c")
-md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP') # 'SKIP'
 
 prepare() {
   cd "linux-$pkgver"

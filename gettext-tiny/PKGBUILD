@@ -1,0 +1,22 @@
+pkgname=gettext-tiny
+pkgver=0.0.4
+pkgrel=1
+pkgdesc="fake gettext, use only when absolutely necessary"
+arch=('i686' 'x86_64')
+url="http://github.com/sabotage-linux"
+options=('strip' 'debug')
+source=("http://ftp.barfooze.de/pub/sabotage/tarballs/$pkgname-$pkgver.tar.bz2")
+md5sums=("SKIP")
+provides=("gettext")
+
+build() {
+  cd "$pkgname-$pkgver"
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  sed -i "s@prefix=/usr/local@@g" Makefile
+  make prefix=$pkgdir install
+  rm "$pkgdir"/include/libintl.h
+}

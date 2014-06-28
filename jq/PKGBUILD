@@ -1,0 +1,24 @@
+pkgname=jq
+pkgver=1.4
+pkgrel=1
+pkgdesc="CLI JSON query parser"
+arch=('i686' 'x86_64')
+url="https://stedolan.github.io/jq/"
+license=('GPL')
+source=("https://stedolan.github.io/jq/download/source/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+provides=("libjq")
+makedepends=("flex" "bison")
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  cd "$pkgdir"/lib
+  rm libjq.a
+}

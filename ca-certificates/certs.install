@@ -1,0 +1,7 @@
+post_install() {
+	update-ca-certificates --fresh
+}
+
+post_upgrade() {
+	update-ca-certificates
+}

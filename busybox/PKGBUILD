@@ -1,6 +1,6 @@
 pkgname=busybox
 pkgver=1.22.1
-pkgrel=1
+pkgrel=2
 pkgdesc="busybox lightweight shell replacement"
 arch=('i686' 'x86_64')
 groups=("base")
@@ -13,12 +13,15 @@ source=("http://busybox.net/downloads/$pkgname-$pkgver.tar.bz2"
 	"busybox-man-mandoc.patch"
 	"busybox-musl-fixes.patch"
         "busybox-sed.patch"
+        "busybox-1.22.1-date.patch"
+        "busybox-1.22.1-iplink.patch"
+        "busybox-1.22.1-nc.patch"
 	"gettext"
         "mdev.conf")
 
 # Gettext is technically not part of busybox, but it fits its spirit so I keep it here.
 
-md5sums=('SKIP' 'SKIP' "SKIP" "SKIP" "SKIP" "SKIP" 'SKIP')
+md5sums=('SKIP' 'SKIP' "SKIP" "SKIP" "SKIP" "SKIP" 'SKIP' "SKIP" "SKIP" "SKIP")
 
 prepare() {
   cd "$pkgname-$pkgver"
@@ -32,8 +35,13 @@ prepare() {
   # Make busybox's man use mandoc in place of nroff
   patch -p1 < ../busybox-man-mandoc.patch
 
-  # Change the defualt man directory
+  # Change the default man directory
   sed -i "s/\/usr\/man/\/share\/man/g" miscutils/man.c
+
+  # Busybox.net hotfixes
+  patch -p1 < ../busybox-1.22.1-date.patch
+  patch -p1 < ../busybox-1.22.1-iplink.patch
+  patch -p1 < ../busybox-1.22.1-nc.patch
 }
 
 build() {

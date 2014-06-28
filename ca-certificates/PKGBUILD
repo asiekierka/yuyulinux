@@ -1,0 +1,38 @@
+pkgname=ca-certificates
+pkgver=20140325
+pkgrel=1
+pkgdesc="Certificate Authority certificates for SSL"
+arch=('i686' 'x86_64')
+groups=("base")
+source=("http://yuyu.asie.pl/ca-certificates_$pkgver.tar.xz")
+md5sums=('SKIP')
+depends=("busybox" "openssl")
+makedepends=("python2")
+install=certs.install
+
+prepare() {
+  cd "$pkgname"
+  for i in Makefile sbin/Makefile sbin/update-ca-certificates; do
+    echo "fixing paths in "$i
+    sed -i "s@usr/@@g" $i
+  done
+  sed -i "s@/sbin@/bin@" sbin/Makefile
+}
+
+build() {
+  cd "$pkgname"
+  make clean
+  make
+}
+
+package() {
+  cd "$pkgname"
+  mkdir -p "$pkgdir"/bin
+  mkdir -p "$pkgdir"/etc/ssl/certs
+  mkdir -p "$pkgdir"/etc/ca-certificates/update.d
+  mkdir -p "$pkgdir"/share/ca-certificates
+  make DESTDIR="$pkgdir" install
+
+  cd "$pkgdir/share/ca-certificates/"
+  find . -name '*.crt' | sort | cut -b3- > "$pkgdir/etc/ca-certificates.conf"
+}
