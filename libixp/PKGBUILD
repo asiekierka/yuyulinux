@@ -1,0 +1,38 @@
+pkgname=("libixp" "ixpc")
+pkgbase=libixp
+pkgver=0.5
+pkgrel=1
+arch=('i686' 'x86_64')
+url="http://libs.suckless.org/libixp"
+source=("http://dl.suckless.org/libs/$pkgbase-$pkgver.tar.gz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+
+prepare() {
+  cd "$pkgbase-$pkgver"
+  sed -i "s/PREFIX =/#PREFIX =/g" config.mk  
+}
+
+build() {
+  cd "$pkgbase-$pkgver"
+  make
+}
+
+package_libixp() {
+  pkgdesc="stand-alone client/server 9P library"
+
+  cd "$pkgbase-$pkgver"
+  make PREFIX="$pkgdir" install
+  cd "$pkgdir"
+  rm -r bin share etc
+}
+
+package_ixpc() {
+  pkgdesc="9P client based on libixp"
+  depends=("libixp")
+
+  cd "$pkgbase-$pkgver"
+  make PREFIX="$pkgdir" install
+  cd "$pkgdir"
+  rm -r etc include lib
+}

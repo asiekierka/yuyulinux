@@ -1,0 +1,14 @@
+pkgname=fonts-urw
+pkgver=1.07pre44
+pkgrel=1
+pkgdesc="URW++ fonts"
+arch=('i686' 'x86_64')
+source=("http://yuyu.asie.pl/urw-fonts-$pkgver.tar.xz")
+md5sums=('SKIP')
+install=fc-cache.install
+
+package() {
+  cd urw-fonts-$pkgver
+  mkdir -p "$pkgdir"/share/fonts/urw
+  cp -Rv * "$pkgdir"/share/fonts/urw
+}

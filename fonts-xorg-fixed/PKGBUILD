@@ -1,11 +1,14 @@
-pkgname=xfonts-fixed
+pkgname=fonts-xorg-fixed
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Unicode fixed font for X.Org"
 arch=('i686' 'x86_64')
+groups=("x11")
 url="http://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html"
 source=("http://yuyu.asie.pl/ucs-fonts-pcf.tar.xz")
 md5sums=('SKIP')
+replaces=("xfonts-fixed")
+install=fc-cache.install
 
 package() {
   cd ucs-fonts
