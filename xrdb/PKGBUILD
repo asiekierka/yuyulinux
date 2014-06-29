@@ -1,0 +1,34 @@
+pkgname=xrdb
+pkgver=1.1.0
+pkgrel=1
+pkgdesc=".Xresources database utility"
+arch=('i686' 'x86_64')
+url="http://cgit.freedesktop.org/xorg/app/xrdb/"
+source=("http://cgit.freedesktop.org/xorg/app/$pkgname/snapshot/$pkgname-$pkgver.tar.gz"
+        "config.h")
+md5sums=('SKIP' 'SKIP')
+depends=("tinyxlib")
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  cp ../config.h .
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  # why does this originally need autoconf and xorg-macros, again?
+  gcc -DNEED_SYS_PARAM_H -D_GNU_SOURCE -DHAVE_MKSTEMP -DHAVE_ASPRINTF \
+    -DHAVE_CONFIG_H $CFLAGS -I. -I/include -c -o xrdb.o xrdb.c
+  gcc -o xrdb $LDFLAGS xrdb.o -lc -lX11 -lXmu
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  mkdir -p "$pkgdir"/bin
+  mkdir -p "$pkgdir"/share/man/man1
+  install -m0755 xrdb "$pkgdir"/bin
+  cd man
+  install -m0644 xrdb.man "$pkgdir"/share/man/man1/xrdb.1
+  sed -i -e "s/__xorgversion__/1.10/g" -e "s/__miscmansuffix__//g" \
+    -e "s/__appmansuffix__//g" "$pkgdir"/share/man/man1/xrdb.1
+}

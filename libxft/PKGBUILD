@@ -1,0 +1,21 @@
+pkgname=libxft
+pkgver=2.3.2
+pkgrel=1
+pkgdesc="X fontconfig library"
+arch=('i686' 'x86_64')
+url="http://www.freedesktop.org/wiki/Software/Xft/"
+source=("http://xorg.freedesktop.org/releases/individual/lib/libXft-$pkgver.tar.bz2")
+md5sums=('SKIP')
+depends=("tinyxlib" "fontconfig" "freetype")
+options=("strip" "debug")
+
+build() {
+  cd "libXft-$pkgver"
+  ./configure --prefix=/ --disable-static --enable-shared
+  make
+}
+
+package() {
+  cd "libXft-$pkgver"
+  make DESTDIR="$pkgdir" install
+}
