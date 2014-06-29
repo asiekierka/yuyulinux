@@ -1,5 +1,5 @@
 pkgname=musl
-pkgver=1.1.2
+pkgver=1.1.3
 pkgrel=1
 pkgdesc="musl C library"
 arch=('i686' 'x86_64')

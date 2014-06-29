@@ -2,7 +2,7 @@
 
 pkgname=runit
 pkgver=2.1.1
-pkgrel=2
+pkgrel=3
 pkgdesc="runit init system"
 arch=('i686' 'x86_64')
 groups=("base")

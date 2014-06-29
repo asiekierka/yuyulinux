@@ -1,12 +1,13 @@
 pkgname=libmodplug
 pkgver=0.8.8.5
-pkgrel=1
+pkgrel=3
 pkgdesc=".MOD/.S3M/.XM/.IT/... player"
 arch=('i686' 'x86_64')
 url="http://modplug-xmms.sourceforge.net"
 source=("http://downloads.sourceforge.net/project/modplug-xmms/$pkgname/$pkgver/$pkgname-$pkgver.tar.gz")
 md5sums=('SKIP')
 options=('strip' 'debug')
+depends=("libstdc++")
 
 prepare() {
   cd "$pkgname-$pkgver"

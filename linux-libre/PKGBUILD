@@ -1,35 +1,44 @@
 pkgname=("linux-libre" "linux-libre-headers" "linux-libre-firmware")
 pkgver=3.14.9
-pkgrel=2
+aufsver=20140629
+pkgrel=5
 pkgdesc="fully free Linux kernel"
 arch=('i686' 'x86_64')
 url="http://linux-libre.fsfla.org/"
 license=('GPL')
+install=linux.install
 #	"https://grsecurity.net/test/grsecurity-3.0-$pkgver-201406191250.patch"
 source=("http://linux-libre.fsfla.org/pub/linux-libre/releases/$pkgver-gnu/linux-libre-$pkgver-gnu.tar.xz"
+        "http://yuyu.asie.pl/aufs3-$aufsver.tar.xz"
 	"linux-posix-sed-3.8.patch"
 	"linux-noperl-timeconst.patch"
 	"linux-menuconfig.patch"
         "linux.config"
         "mktimeconst.c")
-md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP') # 'SKIP'
+md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 prepare() {
   cd "linux-$pkgver"
-  if [ -f "kernel/mktimeconst.c" ]; then
-    rm kernel/mktimeconst.c
-  fi
-  if [ -f "kernel/timeconst.bc" ]; then
-    rm kernel/timeconst.bc
-  fi
 
-  patch -p1 <../linux-posix-sed-3.8.patch
+  # install non-bc timeconst
+  if [ -f "kernel/mktimeconst.c" ]; then rm kernel/mktimeconst.c; fi
+  if [ -f "kernel/timeconst.bc" ]; then rm kernel/timeconst.bc; fi
+  cp ../mktimeconst.c kernel/mktimeconst.c
   patch -p1 <../linux-noperl-timeconst.patch
+
+  # remove certain dependencies
+  patch -p1 <../linux-posix-sed-3.8.patch
   patch -p1 <../linux-menuconfig.patch
 
-  #patch -p1 <../grsecurity-*"$pkgver"*.patch
-
-  cp ../mktimeconst.c kernel/mktimeconst.c
+  # install aufs
+  patch -p1 <../aufs3-$aufsver/aufs3-kbuild.patch
+  patch -p1 <../aufs3-$aufsver/aufs3-base.patch
+  patch -p1 <../aufs3-$aufsver/aufs3-mmap.patch
+  cp -Rv ../aufs3-$aufsver/Documentation .
+  cp -Rv ../aufs3-$aufsver/fs .
+  cp -v ../aufs3-$aufsver/include/uapi/linux/aufs_type.h include/uapi/linux/
+  # install optional aufs tweaks
+  patch -p1 <../aufs3-$aufsver/vfs-ino.patch
 }
 
 build() {

@@ -1,12 +1,13 @@
 pkgname=libffi
 pkgver=3.1
-pkgrel=1
+pkgrel=2
 pkgdesc="portable foreign function interface library"
 arch=('i686' 'x86_64')
 url="https://sourceware.org/libffi/"
 source=("ftp://sourceware.org/pub/$pkgname/$pkgname-$pkgver.tar.gz")
 md5sums=('SKIP')
 options=('strip' 'debug')
+depends=("libstdc++")
 
 build() {
   cd "$pkgname-$pkgver"
@@ -26,4 +27,5 @@ package() {
     mv lib64/* lib/
     rm -r lib64
   fi
+  sed -i -e "s/lib32/lib/g" -e "s/lib64/lib/g" lib/*.la
 }

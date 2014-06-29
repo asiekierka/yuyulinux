@@ -1,4 +1,4 @@
-pkgname=("libflac" "libflac++" "flac")
+pkgname=("libflac" "flac")
 pkgver=1.3.0
 pkgrel=1
 pkgdesc="FLAC decoder and encoder"
@@ -17,7 +17,7 @@ prepare() {
 
 build() {
   cd "flac-$pkgver"
-  ./configure --prefix=/ --enable-cpplibs --enable-ogg --disable-xmms
+  ./configure --prefix=/ --enable-ogg --disable-xmms
   make
 }
 
@@ -29,6 +29,7 @@ package_libflac() {
 
 package_libflac++() {
   pkgdesc="FLAC library for C++"
+  depends=("libstdc++" "libflac")
   cd "flac-$pkgver"
   make DESTDIR=$pkgdir -C src/libFLAC++ install
 }

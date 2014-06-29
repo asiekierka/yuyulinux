@@ -1,6 +1,6 @@
 pkgname=("ncurses" "ncurses-terminfo")
 pkgver=5.9
-pkgrel=1
+pkgrel=2
 pkgdesc="new curses library"
 arch=('i686' 'x86_64')
 url="http://gnu.org/s/ncurses"
@@ -21,7 +21,8 @@ build() {
   # needs to block on fd 1 (which they assume to be a tty).
   # (credit: sabotage devs)
   ./configure --prefix=/ --with-normal --without-tests --enable-widec --with-shared --enable-sigwinch \
-    --enable-ext-colors --infodir=/share/info --mandir=/share/man --without-dlsym </dev/ptmx
+    --enable-ext-colors --infodir=/share/info --mandir=/share/man --without-dlsym \
+    --without-normal --without-debug </dev/ptmx
   make
 }
 

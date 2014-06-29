@@ -1,0 +1,16 @@
+pkgname=ttytter
+pkgver=2.1.00
+pkgrel=1
+pkgdesc="Perl CLI Twitter client"
+arch=('any')
+url="http://www.floodgap.com/software/ttytter/dl.html"
+license=("custom")
+source=("http://www.floodgap.com/software/ttytter/dist2/$pkgver.txt")
+md5sums=('SKIP')
+depends=("perl" "curl")
+
+package() {
+  mkdir -p "$pkgdir"/bin
+  install -m0755 $pkgver.txt "$pkgdir"/bin/ttytter
+  sed -i "s@/usr/bin@/bin@g" "$pkgdir"/bin/ttytter
+}

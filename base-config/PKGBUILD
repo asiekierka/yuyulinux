@@ -1,14 +1,13 @@
 pkgname=base-config
 pkgver=0.1
-pkgrel=1
+pkgrel=2
 pkgdesc="base configuration"
 arch=('i686' 'x86_64')
 groups=("base")
-source=("generate-getty.sh" "base-config.install" "group" "passwd")
-md5sums=("SKIP" "SKIP" "SKIP" "SKIP")
+source=("generate-getty.sh" "group" "passwd")
+md5sums=("SKIP" "SKIP" "SKIP")
 backup=("etc/passwd" "etc/hostname" "etc/group")
 depends=("busybox" "runit")
-install="base-config.install"
 
 build() {
   cd .

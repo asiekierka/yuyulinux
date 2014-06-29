@@ -1,10 +1,6 @@
-# $Id$
-# Maintainer: Pierre Schmitz <pierre@archlinux.de>
-# Contributor: François Charette <firmicus@gmx.net>
-
 pkgname=xz
 pkgver=5.0.5
-pkgrel=2
+pkgrel=3
 pkgdesc='Library and command line tools for XZ and LZMA compressed files'
 arch=('i686' 'x86_64')
 groups=("base")
@@ -19,7 +15,7 @@ md5sums=('19d924e066b6fff0bc9d1981b4e53196'
 build() {
 	cd ${srcdir}/${pkgname}-${pkgver}
 
-	./configure --prefix=/ --disable-rpath --enable-werror
+	./configure --prefix=/ --disable-rpath --enable-werror --disable-static --enable-shared
 	make
 }
 

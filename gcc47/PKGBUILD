@@ -1,14 +1,13 @@
 pkgname=("gcc47" "libstdc++")
 pkgver=4.7.4
-pkgrel=1
+pkgrel=3
 pkgdesc="GNU C Compiler"
 arch=('i686' 'x86_64')
-depends=('libgmp' 'libmpfr' 'libmpc' 'zlib' 'binutils>=2.24' 'libstdc++')
 groups=("base-dev")
 url="http://www.gnu.org/software/gcc/"
 license=('GPL')
-source=("http://ftp.gnu.org/gnu/gcc/gcc-$pkgver/gcc-$pkgver.tar.bz2")
-md5sums=('SKIP')
+source=("http://ftp.gnu.org/gnu/gcc/gcc-$pkgver/gcc-$pkgver.tar.bz2" "os_defines.h")
+md5sums=('SKIP' 'SKIP')
 
 prepare() {
   cd "gcc-$pkgver"
@@ -24,7 +23,9 @@ prepare() {
   sed -i 's,gcc_no_link=yes,gcc_no_link=no,' ./libstdc++-v3/configure
   mv ./libstdc\+\+-v3/config/os/gnu-linux ./libstdc\+\+-v3/config/os/gnu-linux.org
   cp -r ./libstdc\+\+-v3/config/os/generic ./libstdc\+\+-v3/config/os/gnu-linux
+
   cp ./libstdc++-v3/config/os/gnu-linux.org/arm-eabi-extra.ver ./libstdc++-v3/config/os/gnu-linux/
+  cp ../os_defines.h libstdc++-v3/config/os/gnu-linux/
 
   # fixes for the removal of /usr
   for i in gcc/Makefile.in fixincludes/fixinc.in gcc/configure libcpp/configure \
@@ -58,17 +59,20 @@ build() {
 }
 
 package_gcc47() {
+  depends=('libgmp' 'libmpfr' 'libmpc' 'zlib' 'binutils>=2.24' 'libstdc++')
   provides=("gcc" "g++")
   cd "gcc-$pkgver"
-  make DESTDIR="${pkgdir}" install-gcc install-lto-plugin install-target-libgcc
+  make DESTDIR="${pkgdir}" install-gcc
+  make DESTDIR="${pkgdir}" install-lto-plugin
+  make DESTDIR="${pkgdir}" install-target-libgcc
+  make DESTDIR="${pkgdir}" install-target-libstdc++-v3
   ln -sf gcc "${pkgdir}"/bin/cc
 
   rm $pkgdir/lib/gcc/*/$pkgver/include/stddef.h
+  rm -r $pkgdir/lib64
 }
 
 package_libstdc++() {
-  depends=('')
-
   cd "gcc-$pkgver"
   make DESTDIR="${pkgdir}" install-target-libstdc++-v3
 
@@ -78,4 +82,7 @@ package_libstdc++() {
     cp -Rpv lib64/* lib/
     rm -r lib64
   fi
+  sed -i -e "s/lib64/lib/g" -e "s/lib32/lib/g" lib/*.la
+  rm lib/*.a
+  rm -r include share
 }

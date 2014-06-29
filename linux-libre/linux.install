@@ -1,0 +1,7 @@
+post_install() {
+	depmod $1-gnu
+}
+
+post_upgrade() {
+	depmod $1-gnu
+}

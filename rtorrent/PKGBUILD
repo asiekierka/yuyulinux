@@ -1,0 +1,21 @@
+pkgname=rtorrent
+pkgver=0.9.4
+pkgrel=1
+pkgdesc="CLI BitTorrent client"
+arch=('i686' 'x86_64')
+url="https://rakshasa.github.io/rtorrent/"
+source=("http://libtorrent.rakshasa.no/downloads/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+depends=("libtorrent>=0.13.4" "ncurses" "libcurl")
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --disable-static --enable-shared
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

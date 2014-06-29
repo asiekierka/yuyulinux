@@ -2,7 +2,7 @@
 
 pkgname=libnl-tiny
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgfile=libnl-tiny-49d9e43e
 pkgdesc="tiny netlink library"
 arch=('i686' 'x86_64')
@@ -20,7 +20,7 @@ build() {
 	cd $pkgfile
 	cp $srcdir/Makefile src/
 	CFLAGS="$CFLAGS -fPIC" make -C src
-	make -C src libnl-tiny.a
+	#make -C src libnl-tiny.a
 }
 
 package() {
@@ -30,6 +30,6 @@ package() {
 
 	mkdir -p "$pkgdir"/lib/pkgconfig
 	cp src/libnl-tiny.so "$pkgdir"/lib/
-	cp src/libnl-tiny.a "$pkgdir"/lib/
+	#cp src/libnl-tiny.a "$pkgdir"/lib/
 	cp files/libnl-tiny.pc "$pkgdir"/lib/pkgconfig/
 }

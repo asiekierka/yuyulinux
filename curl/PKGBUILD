@@ -1,6 +1,6 @@
 pkgname=("libcurl" "curl")
 pkgver=7.37.0
-pkgrel=2
+pkgrel=3
 pkgdesc="web download library"
 arch=('i686' 'x86_64')
 url=http://curl.haxx.se/
@@ -12,7 +12,10 @@ build() {
   cd "curl-$pkgver"
   PATH_SEPARATOR=":" ./configure --prefix=/ --with-ssl=/lib --without-gnutls --without-polarssl \
     --without-cyassl --without-nss --without-libssh2 --without-librtmp --without-winidn \
-    --with-libidn=/lib --without-nghttp2 --disable-static --enable-shared
+    --with-libidn=/lib --without-nghttp2 --disable-static --enable-shared \
+    --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt --with-random=/dev/urandom \
+    --enable-threaded-resolver --enable-versioned-symbols --disable-ldap --disable-ldaps \
+    --enable-ipv6
   make
 }
 
@@ -22,10 +25,12 @@ package_libcurl() {
   cd "curl-$pkgver"
   make DESTDIR="$pkgdir" -C lib install
   make DESTDIR="$pkgdir" -C include install
+  mkdir -p "$pkgdir"/lib/pkgconfig
+  cp libcurl.pc "$pkgdir"/lib/pkgconfig
 }
 
 package_curl() {
-  depends=("openssl" "libidn" "libcurl")
+  depends=("openssl" "libidn" "libcurl" "ca-certificates")
 
   cd "curl-$pkgver"
   make DESTDIR="$pkgdir" -C src install

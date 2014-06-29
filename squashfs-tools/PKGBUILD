@@ -1,0 +1,27 @@
+pkgname=squashfs-tools
+pkgver=4.3
+pkgrel=1
+pkgdesc="mksquashfs and unsquashfs"
+arch=('i686' 'x86_64')
+url="http://squashfs.sourceforge.net/"
+source=("http://downloads.sourceforge.net/project/squashfs/squashfs/squashfs$pkgver/squashfs$pkgver.tar.gz"
+        "squashfs-4.3.patch")
+md5sums=('SKIP' 'SKIP')
+depends=("zlib" "xz")
+
+prepare() {
+  cd "squashfs"$pkgver
+  patch -p1 <../squashfs-4.3.patch
+}
+
+build() {
+  cd "squashfs"$pkgver"/squashfs-tools"
+  CFLAGS="$CFLAGS -DFNM_EXTMATCH=32" make
+}
+
+package() {
+  cd "squashfs"$pkgver"/squashfs-tools"
+  mkdir -p "$pkgdir"/bin
+  install -m0755 mksquashfs "$pkgdir"/bin/mksquashfs
+  install -m0755 unsquashfs "$pkgdir"/bin/unsquashfs
+}

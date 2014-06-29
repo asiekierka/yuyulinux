@@ -1,0 +1,22 @@
+pkgname=libtorrent
+pkgver=0.13.4
+pkgrel=1
+pkgdesc="torrent library for rtorrent"
+arch=('i686' 'x86_64')
+url="https://rakshasa.github.io/rtorrent/"
+source=("http://libtorrent.rakshasa.no/downloads/$pkgname-$pkgver.tar.gz")
+md5sums=('SKIP')
+options=('strip' 'debug')
+depends=("openssl" "pkgconf")
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/ --disable-static --enable-shared --disable-instrumentation
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  sed -i "s/lib64/lib/g" "$pkgdir"/lib/libtorrent.la
+}

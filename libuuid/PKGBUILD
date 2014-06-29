@@ -1,6 +1,6 @@
 pkgname=libuuid
 pkgver=1.0.2
-pkgrel=1
+pkgrel=2
 pkgdesc="UUID generation library"
 arch=('i686' 'x86_64')
 url="http://libuuid.sourceforge.net"
@@ -10,7 +10,7 @@ md5sums=('SKIP')
 
 build() {
   cd "$pkgname-$pkgver"
-  ./configure --prefix=/
+  ./configure --prefix=/ --disable-static --enable-shared
   make
 }
 

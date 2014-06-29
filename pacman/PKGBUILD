@@ -1,6 +1,6 @@
 pkgname="pacman"
 pkgver=4.1.2
-pkgrel=2
+pkgrel=3
 pkgdesc="A library-based package manager with dependency support"
 arch=('i686' 'x86_64')
 url="http://www.archlinux.org/pacman/"
@@ -35,7 +35,8 @@ prepare() {
 build() {
   cd "$pkgname-$pkgver"
   LIBTOOL="false" ./configure --prefix=/ --sysconfdir=/etc --localstatedir=/var --enable-doc \
-    --with-scriptlet-shell=/bin/bash --with-ldconfig=/bin/ldconfig --disable-nls
+    --with-scriptlet-shell=/bin/bash --with-ldconfig=/bin/ldconfig --disable-nls --disable-static \
+    -enable-shared
   make
   make -C contrib
 }
