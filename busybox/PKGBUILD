@@ -1,6 +1,6 @@
 pkgname=busybox
 pkgver=1.22.1
-pkgrel=3
+pkgrel=4
 pkgdesc="busybox lightweight shell replacement"
 arch=('i686' 'x86_64')
 groups=("base")
@@ -10,6 +10,7 @@ makedepends=("linux-libre-headers")
 backup=("etc/mdev.conf" "etc/udhcpc.rc")
 source=("http://busybox.net/downloads/$pkgname-$pkgver.tar.bz2"
 	"busybox.config"
+	"busybox-blowfish.patch"
 	"busybox-man-mandoc.patch"
 	"busybox-musl-fixes.patch"
         "busybox-1.22.1-date.patch"
@@ -22,7 +23,7 @@ depends=("musl>=1.1.3")
 # Gettext is technically not part of busybox, but it fits its spirit so I keep it here
 # for now.
 
-md5sums=('SKIP' 'SKIP' "SKIP" "SKIP" "SKIP" "SKIP" 'SKIP' "SKIP" "SKIP")
+md5sums=('SKIP' 'SKIP' "SKIP" "SKIP" "SKIP" "SKIP" 'SKIP' "SKIP" "SKIP" "SKIP")
 
 prepare() {
   cd "$pkgname-$pkgver"
@@ -30,14 +31,15 @@ prepare() {
   # Fix musl compatibility.
   patch -p1 < ../busybox-musl-fixes.patch
 
-  # Fix sed using GNU getopt extensions (removes -iSFX, though, so not a perfect solution)
-  #patch -p1 < ../busybox-sed.patch
+  # Allow usage of Blowfish encryption for password (Sabotage Linux)
+  patch -p1 < ../busybox-blowfish.patch
 
-  # Make busybox's man use mandoc in place of nroff
+  # Apply man changes:
+  # - use mandoc instead of nroff
+  # - use /share/man and less instead of more
   patch -p1 < ../busybox-man-mandoc.patch
-
-  # Change the default man directory
-  sed -i "s/\/usr\/man/\/share\/man/g" miscutils/man.c
+  sed -i -e "s/\/usr\/man/\/share\/man/g" -e "s/\"more\"/\"less\"/" \
+    miscutils/man.c
 
   # Busybox.net hotfixes
   patch -p1 < ../busybox-1.22.1-date.patch

@@ -1,0 +1,24 @@
+pkgname=dialog
+pkgver=1.2
+pkgfver=1.2-20140219
+pkgrel=1
+pkgdesc="dialog creation tool for shell scripts"
+arch=('i686' 'x86_64')
+url="http://invisible-island.net/dialog/"
+source=("http://yuyu.asie.pl/$pkgname-$pkgfver.tar.xz")
+md5sums=('SKIP')
+depends=("ncurses")
+
+build() {
+  cd "$pkgname-$pkgfver"
+  ./configure --prefix=/ --disable-nls --enable-widec
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgfver"
+  make DESTDIR="$pkgdir" install
+  cd "$pkgdir"
+  rm -rf lib
+}
+
