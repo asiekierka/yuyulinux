@@ -1,6 +1,6 @@
 pkgname=lighttpd
 pkgver=1.4.35
-pkgrel=1
+pkgrel=2
 pkgdesc="light HTTP server"
 arch=('i686' 'x86_64')
 url="http://lighttpd.net"
@@ -21,7 +21,7 @@ build() {
     --without-valgrind --with-openssl --without-kerberos5 --with-pcre --with-zlib \
     --with-bzip2 --without-fam --without-webdav-props --without-webdav-locks \
     --with-gdbm --with-memcache --with-lua --prefix=/ --sbindir=/bin \
-    --libexecdir=/lib/lighttpd
+    --libexecdir=/lib/lighttpd --libdir=/lib/lighttpd
 
   make
 }
@@ -36,4 +36,5 @@ package() {
 
   mkdir -p "$pkgdir/service/lighttpd"
   cp -p "$srcdir"/lighttpd.service "$pkgdir/service/lighttpd/run"
+  touch "$pkgdir"/service/lighttpd/down
 }

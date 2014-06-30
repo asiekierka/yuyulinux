@@ -1,0 +1,15 @@
+pkgname=fonts-profont
+pkgver=1.0
+pkgrel=1
+pkgdesc="ProFont"
+license=("BSD")
+arch=('i686' 'x86_64')
+source=("http://yuyu.asie.pl/profont-x11.tar.xz")
+md5sums=('SKIP')
+install=fc-cache.install
+
+package() {
+  cd profont-x11
+  mkdir -p "$pkgdir"/share/fonts/profont
+  cp -Rv * "$pkgdir"/share/fonts/profont
+}

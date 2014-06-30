@@ -1,0 +1,7 @@
+post_install() {
+	if [ -f /bin/fc-cache ]; then fc-cache -f -v; fi
+}
+
+post_upgrade() {
+	if [ -f /bin/fc-cache ]; then fc-cache -f -v; fi
+}

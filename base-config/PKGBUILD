@@ -1,6 +1,6 @@
 pkgname=base-config
 pkgver=0.1
-pkgrel=2
+pkgrel=3
 pkgdesc="base configuration"
 arch=('i686' 'x86_64')
 groups=("base")

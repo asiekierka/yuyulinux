@@ -1,6 +1,6 @@
 pkgname=busybox
 pkgver=1.22.1
-pkgrel=2
+pkgrel=3
 pkgdesc="busybox lightweight shell replacement"
 arch=('i686' 'x86_64')
 groups=("base")
@@ -12,16 +12,17 @@ source=("http://busybox.net/downloads/$pkgname-$pkgver.tar.bz2"
 	"busybox.config"
 	"busybox-man-mandoc.patch"
 	"busybox-musl-fixes.patch"
-        "busybox-sed.patch"
         "busybox-1.22.1-date.patch"
         "busybox-1.22.1-iplink.patch"
         "busybox-1.22.1-nc.patch"
 	"gettext"
         "mdev.conf")
+depends=("musl>=1.1.3")
 
-# Gettext is technically not part of busybox, but it fits its spirit so I keep it here.
+# Gettext is technically not part of busybox, but it fits its spirit so I keep it here
+# for now.
 
-md5sums=('SKIP' 'SKIP' "SKIP" "SKIP" "SKIP" "SKIP" 'SKIP' "SKIP" "SKIP" "SKIP")
+md5sums=('SKIP' 'SKIP' "SKIP" "SKIP" "SKIP" "SKIP" 'SKIP' "SKIP" "SKIP")
 
 prepare() {
   cd "$pkgname-$pkgver"
@@ -30,7 +31,7 @@ prepare() {
   patch -p1 < ../busybox-musl-fixes.patch
 
   # Fix sed using GNU getopt extensions (removes -iSFX, though, so not a perfect solution)
-  patch -p1 < ../busybox-sed.patch
+  #patch -p1 < ../busybox-sed.patch
 
   # Make busybox's man use mandoc in place of nroff
   patch -p1 < ../busybox-man-mandoc.patch
@@ -71,4 +72,7 @@ package() {
   chmod +x "$pkgdir"/bin/gettext
 
   cp mdev.conf "$pkgdir"/etc
+  mkdir -p "$pkgdir"/etc/mdev
+  touch "$pkgdir"/etc/mdev/detect-drive
+  chmod +x "$pkgdir"/etc/mdev/detect-drive
 }

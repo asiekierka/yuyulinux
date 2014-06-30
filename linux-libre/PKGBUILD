@@ -1,7 +1,7 @@
 pkgname=("linux-libre" "linux-libre-headers")
 pkgver=3.14.9
 aufsver=20140629
-pkgrel=6
+pkgrel=7
 pkgdesc="fully free Linux kernel"
 arch=('i686' 'x86_64')
 url="http://linux-libre.fsfla.org/"
@@ -52,7 +52,7 @@ build() {
 
 package_linux-libre() {
   groups=("base")
-  optdepends=("linux-libre-firmware")
+  replaces=("linux-libre-firmware")
 
   cd "linux-$pkgver"
 

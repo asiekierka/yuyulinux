@@ -1,0 +1,16 @@
+pkgname=fonts-dejavu
+pkgver=2.34
+pkgrel=1
+pkgdesc="URW++ fonts"
+arch=('i686' 'x86_64')
+source=("http://sourceforge.net/projects/dejavu/files/dejavu/$pkgver/dejavu-fonts-ttf-$pkgver.tar.bz2")
+md5sums=('SKIP')
+install=fc-cache.install
+
+package() {
+  cd dejavu-fonts-ttf-$pkgver
+  mkdir -p "$pkgdir"/share/fonts/dejavu
+  mkdir -p "$pkgdir"/share/fontconfig/conf.avail
+  cp -Rv ttf/* README LICENSE AUTHORS "$pkgdir"/share/fonts/dejavu
+  cp -Rv fontconfig/* "$pkgdir"/share/fontconfig/conf.avail/
+}

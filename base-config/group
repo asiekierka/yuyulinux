@@ -9,3 +9,5 @@ video:x:7:
 audio:x:8:
 floppy:x:9:
 users:x:10:
+cdrom:x:11:root
+usb:x:12:root
